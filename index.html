@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-видимость Ситилинк</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --p:#ff6a00;--pb:#e85d00;--pd:#b34700;--pl:#ff9a3d;--pu:#fff4e8;
+  --bg:#f7f8fa;--bg2:#f0f1f4;--sf:#fff;--sf2:#fbfcfe;
+  --bd:rgba(15,23,42,.06);--bds:rgba(15,23,42,.12);
+  --tx:#1a1a2e;--mt:rgba(26,26,46,.5);--ac:#f05a00;--acb:rgba(255,106,0,.07);
+  --sc:#0ca789;--scl:rgba(12,167,137,.1);--wn:#f59e0b;--wnl:rgba(245,158,11,.1);
+  --er:#ef4444;--erl:rgba(239,68,68,.08);
+  --shs:0 1px 2px rgba(15,23,42,.04),0 4px 16px rgba(15,23,42,.05);
+  --shm:0 4px 12px rgba(15,23,42,.06),0 12px 32px rgba(15,23,42,.08);
+  --r:14px;--rs:10px;
+  --e:cubic-bezier(.22,1,.36,1)
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.shell{width:100vw;height:100vh;display:grid;grid-template-rows:52px 34px 1fr 36px;gap:3px;padding:3px 6px;background:radial-gradient(1200px 600px at 80% -10%,rgba(255,106,0,.05),transparent 60%),radial-gradient(900px 500px at 0% 110%,rgba(12,167,137,.04),transparent 60%)}
+/* ===== HEADER ===== */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-radius:var(--r);background:linear-gradient(120deg,#1a1a2e 0%,#4a2a10 45%,#ff6a00 100%);color:#fff;box-shadow:0 4px 20px rgba(255,106,0,.25);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 90% -50%,rgba(255,255,255,.15),transparent 70%);pointer-events:none}
+.hdr__left{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.hdr__logo{height:20px;filter:brightness(0) invert(1);transition:transform .3s var(--e)}
+.hdr__logo:hover{transform:scale(1.06)}
+.hdr__sep{width:1px;height:24px;background:rgba(255,255,255,.2)}
+.hdr__title{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.hdr__sub{font-size:8.5px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.hdr__right{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.hdr__badge{display:flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);font-size:9px;font-weight:700;letter-spacing:.02em}
+.hdr__dot{width:7px;height:7px;border-radius:50%;background:var(--sc);box-shadow:0 0 0 0 rgba(12,167,137,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(12,167,137,.5)}70%{box-shadow:0 0 0 7px rgba(12,167,137,0)}100%{box-shadow:0 0 0 0 rgba(12,167,137,0)}}
+.hdr__badge img{height:16px;border-radius:4px;background:#fff;padding:1px 4px}
+.hdr__date{font-size:9px;color:rgba(255,255,255,.55);font-weight:500}
+/* ===== NAV ===== */
+.nav{display:flex;gap:3px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav__i{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:9px;border:1px solid var(--bd);background:rgba(255,255,255,.75);backdrop-filter:blur(6px);color:var(--mt);font-size:9px;cursor:pointer;white-space:nowrap;user-select:none;transition:all .25s var(--e);font-weight:500}
+.nav__i:hover{border-color:var(--pb);color:var(--pb);background:#fff;transform:translateY(-1px);box-shadow:var(--shs)}
+.nav__i--on{border-color:var(--p);background:linear-gradient(135deg,var(--p),var(--pb));color:#fff;box-shadow:0 4px 14px rgba(255,106,0,.3);font-weight:700;transform:translateY(-1px)}
+.nav__i--vis{border-color:rgba(255,106,0,.15);color:var(--ac);background:rgba(255,255,255,.9)}
+.nav__n{font-weight:800;font-size:8px;color:var(--ac);opacity:.7}
+.nav__i--on .nav__n{color:rgba(255,255,255,.8);opacity:1}
+.nav__ico{width:12px;height:12px;object-fit:contain;border-radius:3px}
+/* ===== SLIDES ===== */
+.slides{position:relative;border-radius:var(--r);overflow:hidden;box-shadow:var(--shs)}
+.s{position:absolute;inset:0;opacity:0;pointer-events:none;overflow:hidden;transform:translateX(24px) scale(.985);transition:opacity .45s var(--e),transform .45s var(--e)}
+.s--a{opacity:1;pointer-events:auto;transform:translateX(0) scale(1)}
+.scr{height:100%;display:flex;flex-direction:column;gap:8px;padding:14px 18px;background:linear-gradient(180deg,var(--sf2),var(--bg))}
+.scr__hd{flex-shrink:0;animation:fadeUp .5s var(--e) both}
+.scr__h{font-size:21px;font-weight:900;letter-spacing:-.02em;background:linear-gradient(120deg,var(--tx),var(--pb));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.scr__p{font-size:10px;color:var(--mt);margin-top:3px;line-height:1.45;max-width:900px}
+.scr__bd{flex:1;display:flex;flex-direction:column;gap:8px;min-height:0}
+.scr__ft{flex-shrink:0;animation:fadeUp .5s var(--e) .1s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.k{display:inline-flex;padding:3px 10px;border-radius:999px;background:var(--acb);color:var(--ac);font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;border:1px solid rgba(255,106,0,.1)}
+/* ===== CARDS ===== */
+.c{padding:12px 14px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf);flex:1;min-height:0;display:flex;flex-direction:column;box-shadow:var(--shs);transition:box-shadow .3s var(--e),transform .3s var(--e)}
+.c:hover{box-shadow:var(--shm)}
+.c__t{font-size:10px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-shrink:0;color:var(--pb);text-transform:uppercase;letter-spacing:.04em}
+.c__body{flex:1;min-height:0;position:relative}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+/* ===== KPI ===== */
+.kpi{padding:10px 8px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf);text-align:center;box-shadow:var(--shs);transition:transform .3s var(--e),box-shadow .3s var(--e);position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--p),var(--pl));opacity:0;transition:opacity .3s}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shm)}
+.kpi:hover::after{opacity:1}
+.kpi__v{font-size:28px;font-weight:900;line-height:1;letter-spacing:-.03em}
+.kpi__v--p{color:var(--p)} .kpi__v--r{color:var(--sc)} .kpi__v--a{color:var(--ac)} .kpi__v--w{color:var(--wn)} .kpi__v--e{color:var(--er)}
+.kpi__l{font-size:8px;color:var(--mt);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+/* ===== SUMMARY ===== */
+.sum{padding:9px 14px;border:1px solid var(--bd);border-radius:var(--rs);background:linear-gradient(135deg,var(--acb),transparent 70%);font-size:10px;line-height:1.5;border-left:3px solid var(--p);flex-shrink:0;box-shadow:var(--shs)}
+.sum b{color:var(--p)} .sum .r{color:var(--p);font-weight:700} .sum .w{color:var(--wn);font-weight:700} .sum .e{color:var(--er);font-weight:700}
+/* ===== BARS ===== */
+.bc{display:flex;flex-direction:column;gap:4px;flex:1;min-height:0;justify-content:center}
+.br{display:grid;grid-template-columns:120px 1fr 46px;align-items:center;gap:6px;font-size:9px;padding:2px 0}
+.br span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.br b{font-weight:800;text-align:right;font-size:9px}
+.bt{height:18px;background:var(--bg2);border-radius:6px;overflow:hidden;position:relative}
+.bf{height:100%;border-radius:6px;width:0;transition:width 1s var(--e);position:relative}
+.bf--b{background:linear-gradient(90deg,#94a3b8,#cbd5e1)}
+.bf--r{background:linear-gradient(90deg,var(--pb),var(--p))}
+.bf--b::after,.bf--r::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:translateX(-100%);animation:shimmer 2.5s infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.br--r span{font-weight:700;color:var(--p)} .br--r b{color:var(--p)}
+/* ===== FUNNEL ===== */
+.fn{display:flex;flex-direction:column;align-items:center;gap:0;max-width:640px;margin:0 auto;width:100%;padding:6px 0}
+.fn__stage{display:flex;align-items:center;width:100%;gap:10px;padding:4px 0;animation:fadeUp .5s var(--e) both}
+.fn__num{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pb));color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(255,106,0,.3)}
+.fn__tr{flex:1;display:flex;flex-direction:column;gap:3px}
+.fn__bar-wrap{height:26px;background:var(--bg2);border-radius:7px;overflow:hidden}
+.fn__bar{height:100%;border-radius:7px;display:flex;align-items:center;padding:0 10px;color:#fff;font-weight:800;font-size:10px;min-width:fit-content;width:0;transition:width 1.2s var(--e)}
+.fn__bar--rz{background:linear-gradient(90deg,var(--pb),var(--p))}
+.fn__bar--ld{background:linear-gradient(90deg,#94a3b8,#cbd5e1);opacity:.5}
+.fn__labels{display:flex;justify-content:space-between;font-size:7.5px;color:var(--mt);margin-top:2px;font-weight:600}
+.fn__info{min-width:150px;font-size:9px;line-height:1.4;text-align:right;flex-shrink:0}
+.fn__info h4{font-size:10px;font-weight:800;margin-bottom:2px}
+.fn__info .fn__rv{font-size:16px;font-weight:900;color:var(--p);letter-spacing:-.02em}
+.fn__info .fn__ld{font-size:8px;color:var(--mt)}
+.fn__connector{width:1px;height:5px;background:linear-gradient(180deg,var(--bds),transparent);margin:0 auto}
+/* ===== FILTER BUTTONS ===== */
+.fb{display:flex;gap:4px;flex-wrap:wrap}
+.fb button{padding:5px 14px;border:1px solid var(--bd);border-radius:999px;background:var(--sf);font-size:9px;font-family:inherit;cursor:pointer;color:var(--tx);font-weight:600;transition:all .25s var(--e)}
+.fb button:hover{border-color:var(--p);color:var(--p);transform:translateY(-1px);box-shadow:var(--shs)}
+.fb button.on{background:linear-gradient(135deg,var(--p),var(--pb));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(255,106,0,.25)}
+/* ===== HEATMAP ===== */
+.hm{width:100%;border-collapse:separate;border-spacing:3px;font-size:9px}
+.hm th{padding:5px 6px;font-weight:800;text-align:center;font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--mt)}
+.hm th:first-child{text-align:left}
+.hm td{padding:6px 8px;text-align:center;border-radius:6px;font-weight:700;font-size:9px;transition:transform .2s var(--e)}
+.hm td:hover{transform:scale(1.05)}
+.hm td:first-child{text-align:left;font-weight:700;display:flex;align-items:center;gap:5px;border-radius:6px;background:transparent !important}
+.hm td:first-child img{width:14px;height:14px;object-fit:contain}
+.hm tr.hm--rz td:first-child{border-left:3px solid var(--p)}
+.hc{display:inline-block;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:800;min-width:34px}
+/* ===== TABLE ===== */
+.tb{width:100%;border-collapse:collapse;font-size:9px}
+.tb th{text-align:left;font-weight:800;padding:7px 10px;border-bottom:2px solid var(--bds);font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--mt)}
+.tb td{padding:6px 10px;border-bottom:1px solid var(--bd)}
+.tb tr:last-child td{border-bottom:none}
+.tb tr{transition:background .2s}
+.tb tr:hover td{background:var(--acb)}
+.opp{display:inline-block;padding:3px 8px;border-radius:6px;font-size:8px;font-weight:800}
+.opp--e{background:var(--erl);color:var(--er)} .opp--w{background:var(--wnl);color:var(--wn)}
+.opp--a{background:var(--acb);color:var(--ac)} .opp--r{background:var(--scl);color:var(--sc)}
+/* ===== PROS/CONS ===== */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pc__p{padding:10px;border:1px solid rgba(12,167,137,.2);border-radius:var(--rs);background:linear-gradient(135deg,rgba(12,167,137,.04),transparent);box-shadow:var(--shs)}
+.pc__c{padding:10px;border:1px solid rgba(245,158,11,.2);border-radius:var(--rs);background:linear-gradient(135deg,rgba(245,158,11,.04),transparent);box-shadow:var(--shs)}
+.pc__i{font-size:9px;line-height:1.5;padding:4px 0;border-bottom:1px solid var(--bd);animation:fadeUp .4s var(--e) both}
+.pc__i:last-child{border-bottom:none}
+.pc__p .pc__i::before{content:"✓ ";color:var(--sc);font-weight:900}
+.pc__c .pc__i::before{content:"⚠ ";color:var(--wn);font-weight:900}
+.pc__t{font-size:11px;font-weight:800;margin-bottom:6px}
+/* ===== TITLE SLIDE ===== */
+.tsl{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;padding:20px;background:radial-gradient(800px 400px at 50% 0%,rgba(255,106,0,.06),transparent 60%),radial-gradient(600px 300px at 80% 100%,rgba(12,167,137,.05),transparent 60%)}
+.tsl__badge{padding:5px 14px;border-radius:999px;background:var(--acb);color:var(--ac);font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;border:1px solid rgba(255,106,0,.12);animation:fadeUp .6s var(--e) both}
+.tsl__h{font-size:clamp(26px,3.8vw,44px);font-weight:900;margin-bottom:10px;line-height:1.05;letter-spacing:-.03em;animation:fadeUp .6s var(--e) .05s both}
+.tsl__h .r{background:linear-gradient(120deg,var(--p),var(--pl));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tsl__sub{font-size:11px;color:var(--mt);margin-bottom:16px;max-width:600px;line-height:1.6;animation:fadeUp .6s var(--e) .1s both}
+.tsl__kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:700px;width:100%;margin-bottom:16px;animation:fadeUp .6s var(--e) .15s both}
+.tsl__base{font-size:10px;color:var(--mt);margin-bottom:12px;font-weight:500;animation:fadeUp .6s var(--e) .2s both}
+.tsl__models{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;animation:fadeUp .6s var(--e) .25s both}
+.tsl__m{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;border:1px solid var(--bd);background:rgba(255,255,255,.85);backdrop-filter:blur(6px);font-size:9px;font-weight:600;transition:all .25s var(--e);box-shadow:var(--shs)}
+.tsl__m:hover{transform:translateY(-2px);box-shadow:var(--shm);border-color:var(--pb)}
+.tsl__m img{width:14px;height:14px;object-fit:contain}
+/* ===== MODEL INTRO ===== */
+.mi{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:8px}
+.mi__icon{width:48px;height:48px;object-fit:contain;animation:fadeUp .5s var(--e) both;filter:drop-shadow(0 4px 12px rgba(15,23,42,.1))}
+.mi__name{font-size:26px;font-weight:900;letter-spacing:-.02em;animation:fadeUp .5s var(--e) .05s both}
+.mi__kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;width:100%;animation:fadeUp .5s var(--e) .1s both}
+/* ===== TOPIC CARDS ===== */
+.tc{padding:10px 12px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf);box-shadow:var(--shs);transition:transform .3s var(--e),box-shadow .3s var(--e)}
+.tc:hover{transform:translateY(-3px);box-shadow:var(--shm)}
+.tc__h{font-size:11px;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.tc__v{font-size:24px;font-weight:900;letter-spacing:-.02em}
+.tc__l{font-size:8px;color:var(--mt);margin-top:3px;font-weight:500}
+.tc__bar{height:7px;background:var(--bg2);border-radius:4px;margin-top:6px;overflow:hidden}
+.tc__bar-f{height:100%;border-radius:4px;width:0;transition:width 1s var(--e)}
+/* ===== FOOTER ===== */
+.ftr{display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-radius:var(--rs);background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border:1px solid var(--bd);box-shadow:var(--shs)}
+.ftr__l{font-size:9px;color:var(--mt);font-weight:500}
+.ftr__r{display:flex;align-items:center;gap:5px}
+.ftr__ct{font-size:10px;font-weight:700;min-width:40px;text-align:center;color:var(--pb)}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:28px;padding:0 14px;font-family:inherit;font-size:10px;font-weight:700;border-radius:8px;border:none;cursor:pointer;transition:all .25s var(--e)}
+.btn--p{background:linear-gradient(135deg,var(--p),var(--pb));color:#fff;box-shadow:0 3px 10px rgba(255,106,0,.25)}
+.btn--p:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(255,106,0,.35)}
+.btn--o{background:transparent;color:var(--tx);border:1px solid var(--bds)}
+.btn--o:hover{background:var(--acb);border-color:var(--pb)}
+.btn:disabled{opacity:.3;cursor:default;transform:none;box-shadow:none}
+canvas{display:block;max-width:100%;max-height:100%}
+.scr__bd>.g2,.scr__bd>.g3{flex:1;min-height:0}
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(15,23,42,.15);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,106,0,.4)}
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.pc{grid-template-columns:1fr}}
+@media(max-width:600px){.tsl__kpis{grid-template-columns:1fr 1fr}.hdr__sub,.ftr__l{display:none}.br{grid-template-columns:90px 1fr 40px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="hdr">
+<div class="hdr__left">
+<img class="hdr__logo" src="assets/logo-white.svg" alt="Impulse">
+<div class="hdr__sep"></div>
+<div><div class="hdr__sub">AI/GEO-исследование · Ретейл электроники</div><div class="hdr__title">AI-видимость в нейросетях</div></div>
+</div>
+<div class="hdr__right">
+<div class="hdr__badge"><div class="hdr__dot"></div><img src="assets/citilink.png" alt="Ситилинк"></div>
+<div class="hdr__date">Август 2026</div>
+</div>
+</header>
+<nav class="nav" id="nav"></nav>
+<section class="slides" id="slides"></section>
+<footer class="ftr">
+<div class="ftr__l">Impulse.guru × Ситилинк</div>
+<div class="ftr__r">
+<button class="btn btn--o" id="prev" disabled>←</button>
+<div class="ftr__ct"><span id="cur">1</span>/<span id="tot">1</span></div>
+<button class="btn btn--p" id="next">→</button>
+<button class="btn btn--o" id="home" style="display:none">↑</button>
+</div>
+</footer>
+</div>
+<script>
+const ICO={
+  'Google AI Overview':'assets/icon_ai/google_ai_overview.svg',
+  'Алиса':'assets/icon_ai/yandex_alice.svg',
+  'ChatGPT':'assets/icon_ai/chatgpt.svg',
+  'DeepSeek':'assets/icon_ai/deepseek.svg',
+  'Gemini':'assets/icon_ai/gemini.svg',
+  'GigaChat':'assets/icon_ai/gigachat.svg',
+  'Perplexity':'assets/icon_ai/perplexity.svg',
+  'YandexGPT':'assets/icon_ai/yandexgpt.png'
+};
+const SN=['Осознание','Сравнение','Выбор','Покупка'];
+const D={
+  ov:[
+    {b:'DNS',f:1578,v:.236},
+    {b:'Яндекс Маркет',f:1117,v:.167},
+    {b:'Ситилинк',f:1069,v:.16,r:1},
+    {b:'OZON',f:930,v:.139},
+    {b:'М.Видео',f:884,v:.132},
+    {b:'WB',f:541,v:.081},
+    {b:'Технопарк',f:182,v:.027}
+  ],
+  fn:[
+    {s:1,n:'Осознание потребности',v:.052,l:'DNS',lv:.122},
+    {s:2,n:'Поиск и сравнение',v:.032,l:'DNS',lv:.101},
+    {s:3,n:'Выбор решения',v:.087,l:'DNS',lv:.16},
+    {s:4,n:'Покупка / действие',v:.365,l:'DNS',lv:.45}
+  ],
+  ft:{
+    1:[{b:'DNS',v:.122},{b:'Ситилинк',v:.052,r:1},{b:'М.Видео',v:.013},{b:'OZON',v:.005},{b:'Яндекс Маркет',v:.005},{b:'WB',v:.003},{b:'Технопарк',v:0}],
+    2:[{b:'DNS',v:.101},{b:'Яндекс Маркет',v:.05},{b:'М.Видео',v:.038},{b:'Ситилинк',v:.032,r:1},{b:'OZON',v:.012},{b:'Технопарк',v:.01},{b:'WB',v:.007}],
+    3:[{b:'DNS',v:.16},{b:'Яндекс Маркет',v:.11},{b:'OZON',v:.094},{b:'М.Видео',v:.089},{b:'Ситилинк',v:.087,r:1},{b:'WB',v:.056},{b:'Технопарк',v:.012}],
+    4:[{b:'DNS',v:.45},{b:'Ситилинк',v:.365,r:1},{b:'Яндекс Маркет',v:.358},{b:'OZON',v:.306},{b:'М.Видео',v:.277},{b:'WB',v:.177},{b:'Технопарк',v:.068}]
+  },
+  md:{
+    'Google AI Overview':{v:.106,p:6,l:'DNS',sv:[.016,.106,.058,.186],br:[{b:'DNS',v:.362},{b:'М.Видео',v:.213},{b:'Яндекс Маркет',v:.122},{b:'Ситилинк',v:.106,r:1},{b:'OZON',v:.098},{b:'Технопарк',v:.063},{b:'WB',v:.037}]},
+    'Алиса':{v:.143,p:4,l:'DNS',sv:[.032,.048,.079,.283],br:[{b:'DNS',v:.144},{b:'Яндекс Маркет',v:.133},{b:'Ситилинк',v:.143,r:1},{b:'М.Видео',v:.086},{b:'OZON',v:.087},{b:'WB',v:.046},{b:'Технопарк',v:.02}]},
+    'ChatGPT':{v:.095,p:7,l:'DNS',sv:[.038,.01,.026,.275],br:[{b:'DNS',v:.231},{b:'Яндекс Маркет',v:.189},{b:'М.Видео',v:.105},{b:'Ситилинк',v:.095,r:1},{b:'OZON',v:.082},{b:'WB',v:.032},{b:'Технопарк',v:.006}]},
+    'DeepSeek':{v:.374,p:1,l:'DNS',sv:[.165,.057,.279,.75],ld:['Ситилинк','DNS','Ситилинк','Ситилинк'],lv:[.165,.101,.279,.75],br:[{b:'DNS',v:.453},{b:'Ситилинк',v:.374,r:1},{b:'Яндекс Маркет',v:.355},{b:'OZON',v:.334},{b:'М.Видео',v:.313},{b:'WB',v:.278},{b:'Технопарк',v:.011}]},
+    'Gemini':{v:.206,p:3,l:'DNS',sv:[.076,.01,.127,.475],ld:['DNS','DNS','DNS','Ситилинк'],lv:[.122,.101,.16,.475],br:[{b:'DNS',v:.305},{b:'Яндекс Маркет',v:.254},{b:'OZON',v:.242},{b:'Ситилинк',v:.206,r:1},{b:'М.Видео',v:.178},{b:'WB',v:.135},{b:'Технопарк',v:.042}]},
+    'GigaChat':{v:.089,p:8,l:'DNS',sv:[0,0,.038,.25],br:[{b:'DNS',v:.171},{b:'OZON',v:.121},{b:'М.Видео',v:.114},{b:'Ситилинк',v:.089,r:1},{b:'Яндекс Маркет',v:.085},{b:'WB',v:.065},{b:'Технопарк',v:.022}]},
+    'Perplexity':{v:.125,p:5,l:'DNS',sv:[.063,.019,.016,.383],br:[{b:'DNS',v:.136},{b:'Ситилинк',v:.125,r:1},{b:'Яндекс Маркет',v:.12},{b:'М.Видео',v:.011},{b:'OZON',v:.041},{b:'Технопарк',v:.042},{b:'WB',v:.004}]},
+    'YandexGPT':{v:.136,p:1,l:'Ситилинк',sv:[.013,.01,.066,.358],br:[{b:'Ситилинк',v:.136,r:1},{b:'OZON',v:.101},{b:'DNS',v:.091},{b:'Яндекс Маркет',v:.074},{b:'WB',v:.047},{b:'М.Видео',v:.042},{b:'Технопарк',v:.013}]}
+  },
+  sov:[
+    {b:'DNS',s:.236},{b:'Яндекс Маркет',s:.167},{b:'Ситилинк',s:.16,r:1},{b:'OZON',s:.139},{b:'М.Видео',s:.132},{b:'WB',s:.081},{b:'Технопарк',s:.027}
+  ],
+  topics:[
+    {t:'Комплектующие',v:.213,r:1,l:'DNS',sub:[{t:'Материнские платы',v:.32},{t:'Накопители SSD/HDD',v:.303},{t:'Блоки питания',v:.29},{t:'Сборка ПК',v:.226},{t:'Оперативная память',v:.204},{t:'Процессоры',v:.164},{t:'Видеокарты',v:.149},{t:'Охлаждение',v:.114}]},
+    {t:'Ноутбуки',v:.188,r:2,l:'DNS',sub:[{t:'Память и накопители',v:.38},{t:'Недорогие/бюджетные',v:.348},{t:'Игровые ноутбуки',v:.148},{t:'Для работы/учёбы',v:.14},{t:'Прочее',v:.118},{t:'Рейтинги и топы',v:.043}]},
+    {t:'Смартфоны',v:.144,r:3,l:'DNS',sub:[{t:'Бюджетные',v:.384},{t:'Для пожилых/кнопочные',v:.259},{t:'Автономность/зарядка',v:.24},{t:'Прочее',v:.117},{t:'Камера',v:.106},{t:'Технические термины',v:0},{t:'Рейтинги и топы',v:.023}]},
+    {t:'Телевизоры',v:.081,r:4,l:'DNS',sub:[{t:'Прочее',v:.121},{t:'Диагональ/размер',v:.064},{t:'Антенна/кронштейн',v:.058},{t:'Матрица/технология экрана',v:0},{t:'Рейтинги и топы',v:0}]}
+  ],
+  tonN:[
+    {b:'Комплектующие',p:.329,n:.642,neg:.029},
+    {b:'Ноутбуки',p:.457,n:.532,neg:.011},
+    {b:'Смартфоны',p:.312,n:.674,neg:.014},
+    {b:'Телевизоры',p:.445,n:.52,neg:.035}
+  ],
+  tonM:[
+    {b:'Google AI Overview',p:.446,n:.541,neg:.013},
+    {b:'Алиса',p:.085,n:.913,neg:.003},
+    {b:'ChatGPT',p:.509,n:.456,neg:.034},
+    {b:'DeepSeek',p:.515,n:.433,neg:.052},
+    {b:'Gemini',p:.616,n:.356,neg:.027},
+    {b:'GigaChat',p:.232,n:.751,neg:.018},
+    {b:'Perplexity',p:.521,n:.456,neg:.022},
+    {b:'YandexGPT',p:.124,n:.864,neg:.013}
+  ],
+  opp:[
+    {p:1,t:'Смартфоны — Бюджетные',st:'Покупка',v:'46,5%',l:'DNS',g:'6,3 п.п.',z:'Сильная'},
+    {p:2,t:'Комплектующие — Покупка',st:'Покупка',v:'43,6%',l:'DNS',g:'9,1 п.п.',z:'Сильная'},
+    {p:3,t:'Ноутбуки — Покупка',st:'Покупка',v:'42,7%',l:'DNS',g:'8,9 п.п.',z:'Сильная'},
+    {p:4,t:'Телевизоры — Покупка',st:'Покупка',v:'16,4%',l:'DNS',g:'9,4 п.п.',z:'Средняя'},
+    {p:5,t:'Комплектующие — Выбор',st:'Выбор',v:'17,6%',l:'DNS',g:'8,6 п.п.',z:'Средняя'},
+    {p:6,t:'Смартфоны — Осознание',st:'Осознание',v:'0%',l:'М.Видео',g:'4,3 п.п.',z:'Критично'},
+    {p:7,t:'Телевизоры — Осознание',st:'Осознание',v:'0%',l:'OZON',g:'1,2 п.п.',z:'Критично'},
+    {p:8,t:'Смартфоны — Сравнение',st:'Сравнение',v:'0,6%',l:'DNS',g:'8,6 п.п.',z:'Критично'}
+  ]
+};
+function p(v){return(v*100).toFixed(1)+'%'}
+function fmtAbs(v){return v+''}
+function hcBg(v){if(v===0)return'#f1f5f9';if(v<.02)return'#fff1e6';if(v<.05)return'#ffd9b3';if(v<.1)return'#ffb380';if(v<.15)return'#ff8c4d';return'#ff6a00'}
+function hcFg(v){if(v===0)return'#94a3b8';if(v<.02)return'#e85d00';if(v<.05)return'#b34700';return'#fff'}
+function barHTML(items,vk,lk,mx,isAbs){const m=mx||Math.max(...items.map(i=>i[vk]));return items.map((i,idx)=>{const r=i.r,w=m>0?(i[vk]/m*100):0;return`<div class="br${r?' br--r':''}" style="animation:fadeUp .4s var(--e) ${idx*.05}s both"><span>${i[lk]}</span><div class="bt"><div class="bf${r?' bf--r':' bf--b'}" data-w="${w}"></div></div><b>${isAbs?fmtAbs(i[vk]):p(i[vk])}</b></div>`}).join('')}
+function funnelHTML(fnData){const mx=Math.max(...fnData.map(f=>f.lv||f.v));return`<div class="fn">${fnData.map((f,i)=>{const wRz=mx>0?(f.v/mx*100):0;const wLd=mx>0?((f.lv||0)/mx*100):0;return`${i>0?'<div class="fn__connector"></div>':''}<div class="fn__stage" style="animation-delay:${i*.1}s"><div class="fn__num">${i+1}</div><div class="fn__tr"><div class="fn__bar-wrap"><div class="fn__bar fn__bar--ld" data-w="${wLd}">${p(f.lv||0)}</div></div><div class="fn__bar-wrap"><div class="fn__bar fn__bar--rz" data-w="${wRz}">${p(f.v)}</div></div><div class="fn__labels"><span>Ситилинк</span><span>${f.l||'лидер'} (лидер)</span></div></div><div class="fn__info"><h4>${f.n}</h4><div class="fn__rv">${p(f.v)}</div><div class="fn__ld">Лидер: ${f.l||'—'} ${p(f.lv||0)}</div></div></div>`}).join('')}</div>`}
+
+const topicIcons=['<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h2"/><path d="M7 11h4"/></svg>','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h12"/><path d="M9 8v4"/><path d="M15 8v4"/></svg>','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="15" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg>'];
+
+const slides=[],navItems=[];
+function addSlide(html){slides.push(html);return slides.length-1}
+function addNav(label,icon,slideIdx){navItems.push({label,icon,slideIdx})}
+addSlide(`<div class="scr"><div class="tsl"><div class="tsl__badge">AI/GEO-замер · Ретейл электроники</div><h1 class="tsl__h">AI-видимость <span class="r">Ситилинк</span></h1><div class="tsl__kpis"><div class="kpi"><div class="kpi__v kpi__v--p" data-count="16.0" data-suffix="%">0%</div><div class="kpi__l">Органическая видимость</div></div><div class="kpi"><div class="kpi__v kpi__v--a">3 место</div><div class="kpi__l">Среди брендов</div></div><div class="kpi"><div class="kpi__v kpi__v--a" data-count="17.0" data-suffix="%">0%</div><div class="kpi__l">Голос бренда</div></div><div class="kpi"><div class="kpi__v kpi__v--w" data-count="1218">0</div><div class="kpi__l">Проблемных ответов</div></div></div><div class="tsl__models"><div class="tsl__m"><img src="assets/icon_ai/google_ai_overview.svg" alt="">Google AI Overview</div><div class="tsl__m"><img src="assets/icon_ai/yandex_alice.svg" alt="">Алиса</div><div class="tsl__m"><img src="assets/icon_ai/chatgpt.svg" alt="">ChatGPT</div><div class="tsl__m"><img src="assets/icon_ai/deepseek.svg" alt="">DeepSeek</div><div class="tsl__m"><img src="assets/icon_ai/gemini.svg" alt="">Gemini</div><div class="tsl__m"><img src="assets/icon_ai/gigachat.svg" alt="">GigaChat</div><div class="tsl__m"><img src="assets/icon_ai/perplexity.svg" alt="">Perplexity</div><div class="tsl__m"><img src="assets/icon_ai/yandexgpt.png" alt="">YandexGPT</div></div></div></div>`);
+addNav('вводная','',0);
+
+addSlide(`<div class="scr"><div class="scr__hd"><div class="k">общая видимость</div><h2 class="scr__h">Органическая видимость брендов</h2><p class="scr__p"><b>Что такое органическая видимость:</b> доля ответов AI-моделей, в которых найден бренд, к общему числу ответов (6 678). Ситилинк найден в 1 069 ответах — 16,0%. DNS лидирует с 23,6% (1 578 упоминаний) — разрыв <b>×1,5</b>.</p></div><div class="scr__bd"><div class="g2"><div class="c"><div class="c__t">Видимость (%)</div><div class="c__body"><div class="bc" data-chart="oBars"></div></div></div><div class="c"><div class="c__t">Упоминаний (из 6 678)</div><div class="c__body"><div class="bc" data-chart="oMentions"></div></div></div></div></div><div class="scr__ft"><div class="sum"><b>Итог:</b> <span class="r">Ситилинк: 16,0%</span> (1 069). DNS: 23,6% (1 578) — <b>×1,5</b>. Ситилинк — 3-й бренд по видимости, опережает OZON (13,9%) и М.Видео (13,2%).</div></div></div>`);
+addNav('видимость','',1);
+
+addSlide(`<div class="scr"><div class="scr__hd"><div class="k">воронка</div><h2 class="scr__h">AI-видимость по этапам воронки</h2><p class="scr__p"><b>Осознание:</b> 5,2%. <b>Сравнение:</b> 3,2% — слабый этап. <b>Выбор:</b> 8,7%. <b>Покупка:</b> 36,5% — сильнейший этап.</p></div><div class="scr__bd"><div class="fn" data-chart="funnel"></div></div><div class="scr__ft"><div class="sum"><b>Главный вывод:</b> Ситилинк <span class="r">доминирует на этапе покупки (36,5%)</span>, но <span class="e">проваливается на сравнении (3,2%)</span>. Бренд воспринимается моделями как «место покупки», но не попадает в набор сравнения. Нужны сравнения, обзоры, рейтинги, FAQ.</div></div></div>`);
+addNav('воронка','',2);
+
+addSlide(`<div class="scr"><div class="scr__hd"><div class="k">детализация</div><h2 class="scr__h">ТОП брендов по этапам воронки</h2><p class="scr__p">На осознании лидер опережает в 2,3× (12,2% vs 5,2%), на сравнении — в 3,2× (10,1% vs 3,2%). На покупке Ситилинк почти догоняет DNS (36,5% vs 45%).</p></div><div style="flex-shrink:0"><div class="fb" data-chart="fFilter"></div></div><div class="scr__bd" data-chart="fDetail"></div><div class="scr__ft"><div class="sum"><b>Рекомендация:</b> усилить контент на этапах осознания и сравнения: гайды по выбору, сравнения моделей, чек-листы, ответы на частые вопросы.</div></div></div>`);
+addNav('детали','',3);
+
+addSlide(`<div class="scr"><div class="scr__hd"><div class="k">тематические кластеры</div><h2 class="scr__h">Видимость по нишам</h2><p class="scr__p"><b>Комплектующие: 21,3%</b> (1 место) — сильнейшая ниша. <b>Ноутбуки: 18,8%</b> (2 место). <b>Смартфоны: 14,4%</b> (3 место). <b>Телевизоры: 8,1%</b> (4 место) — самая слабая.</p></div><div class="scr__bd"><div class="g2" data-chart="topics"></div></div><div class="scr__ft"><div class="sum"><b>Вывод:</b> <span class="r">Комплектующие — 21,3%</span> — база для развития. <span class="e">Телевизоры — 8,1%</span> — требует контентного усиления: сравнения матриц, диагоналей, технологий экрана.</div></div></div>`);
+addNav('ниши','',4);
+
+addSlide(`<div class="scr"><div class="scr__hd"><div class="k">подтемы</div><h2 class="scr__h">Видимость по подтемам внутри ниш</h2><p class="scr__p">Детализация по тематическим подкластерам. Кликните на нишу, чтобы увидеть подтемы.</p></div><div style="flex-shrink:0"><div class="fb" data-chart="topicFilter"></div></div><div class="scr__bd" data-chart="topicDetail"></div><div class="scr__ft"><div class="sum"><b>Точки роста:</b> <span class="r">Материнские платы 32%</span>, <span class="r">Накопители 30,3%</span>, <span class="r">Блоки питания 29%</span>. <span class="e">Технические термины смартфонов 0%</span>, <span class="e">Матрица ТВ 0%</span> — зоны для контента.</div></div></div>`);
+addNav('подтемы','',5);
+
+const modelOrder=['Google AI Overview','Алиса','ChatGPT','DeepSeek','Gemini','GigaChat','Perplexity','YandexGPT'];
+modelOrder.forEach(md=>{
+  const d=D.md[md],ic=ICO[md];
+  const idx0=addSlide(`<div class="scr"><div class="mi"><img class="mi__icon" src="${ic}" alt=""><div class="mi__name">${md}</div><p class="scr__p" style="margin:0">Место: ${d.p} · Лидер: ${d.l} ${p(d.v)}</p><div class="mi__kpis"><div class="kpi"><div class="kpi__v kpi__v--p">${p(d.v)}</div><div class="kpi__l">Видимость</div></div><div class="kpi"><div class="kpi__v kpi__v--a">${d.p} место</div><div class="kpi__l">Рейтинг</div></div><div class="kpi"><div class="kpi__v kpi__v--a">${d.l}</div><div class="kpi__l">Лидер</div></div></div><p style="font-size:8px;color:var(--mt);margin-top:8px;margin-bottom:0;text-transform:uppercase;font-weight:800;letter-spacing:.06em">Этапы воронки</p><div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:4px">${d.sv.map((v,i)=>`<div style="padding:3px 8px;border-radius:6px;background:var(--acb);font-size:9px;font-weight:600"><b>${SN[i]}:</b> ${p(v)}</div>`).join('')}</div></div></div>`);
+  addSlide(`<div class="scr"><div class="scr__hd" style="display:flex;align-items:center;gap:8px"><img src="${ic}" alt="" style="width:20px;height:20px"><div><div class="k">AI-модель</div><h2 class="scr__h">${md} — рейтинг брендов</h2></div></div><div class="scr__bd"><div class="c"><div class="c__t">Рейтинг брендов</div><div class="c__body"><div class="bc" data-chart="mb_${md}"></div></div></div></div><div class="scr__ft"><div class="sum"><b>${md}:</b> Ситилинк — <span class="r">${p(d.v)}</span> (${d.p} место). Лидер: ${d.l}. DeepSeek — лучшая модель (37,4%), GigaChat — худшая (8,9%).</div></div></div>`);
+  addSlide(`<div class="scr"><div class="scr__hd" style="display:flex;align-items:center;gap:8px"><img src="${ic}" alt="" style="width:20px;height:20px"><div><div class="k">AI-модель</div><h2 class="scr__h">${md} — Этапы воронки</h2></div></div><div class="scr__bd"><div class="c"><div class="c__t">По этапам воронки</div><div class="c__body" data-chart="ms_${md}"></div></div></div><div class="scr__ft"><div class="sum"><b>${md}:</b> Лучший этап — <span class="r">${SN[d.sv.indexOf(Math.max(...d.sv))]} (${p(Math.max(...d.sv))})</span>. Провал на осознании — GigaChat показывает 0%. Это системная проблема.</div></div></div>`);
+  addNav(md,ic,idx0);
+});
+
+const sovIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">голос бренда и матрица</div><h2 class="scr__h">Голос бренда и тепловая карта</h2><p class="scr__p"><b>Чем голос бренда отличается от видимости:</b> Органическая видимость (16,0%) — доля ответов, где найден Ситилинк. Голос бренда (17,0%) — доля Ситилинка среди всех бренд-упоминаний. 3 место из 7.</p></div><div class="scr__bd"><div class="g2"><div class="c" style="align-items:center"><div class="c__t">Голос бренда — все бренды</div><div class="c__body" style="display:flex;justify-content:center;align-items:center;overflow:hidden"><canvas id="sovC"></canvas></div></div><div class="c"><div class="c__t">Матрица: модель × этапы воронки</div><div class="c__body" style="overflow:auto"><table class="hm" id="hmT"></table></div></div></div></div><div class="scr__ft"><div class="sum"><b>Голос бренда: 17,0%</b>. DNS 23,6%, Яндекс Маркет 16,7%. DeepSeek показывает на Покупке 75% — зона для контентного усиления.</div></div></div>`);
+addNav('голос бренда','',sovIdx);
+
+const tonIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">тональность</div><h2 class="scr__h">Тональность ответов AI-моделей</h2><p class="scr__p"><b>По нишам:</b> Ноутбуки — самый позитивный сегмент (45,7% позитивных). Телевизоры — самый негативный (3,5% негативных). <b>По моделям:</b> Gemini — самая позитивная (61,6%), Алиса — самая нейтральная (91,3%).</p></div><div class="scr__bd"><div class="g2"><div class="c"><div class="c__t">Тональность по нишам</div><div class="c__body" data-chart="tonN"></div></div><div class="c"><div class="c__t">Тональность по моделям</div><div class="c__body" data-chart="tonM"></div></div></div></div><div class="scr__ft"><div class="sum"><b>Вывод:</b> <span class="r">Низкий уровень негатива (1–3,5%)</span> — бренд редко упоминается в негативном контексте. Основной объём — нейтральные упоминания. Позитив выше у моделей с глубоким анализом (Gemini, Perplexity).</div></div></div>`);
+addNav('тональность','',tonIdx);
+
+const oppIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">зоны роста</div><h2 class="scr__h">Зоны роста</h2><p class="scr__p"><b>8 точек роста</b> на пересечении ниш и этапов воронки. Ситилинк силён на покупке во всех нишах, но критически слаб на осознании и сравнении в смартфонах и телевизорах.</p></div><div class="scr__bd"><div class="c" style="flex:none"><table class="tb" id="oppT"><thead><tr><th>#</th><th>Ниша — подтема</th><th>Этап</th><th>Вид.</th><th>Лидер</th><th>Разрыв</th><th>Оценка</th></tr></thead><tbody></tbody></table></div><div class="pc"><div class="pc__p"><div class="pc__t" style="color:var(--sc)">Сильные стороны</div><div class="pc__i">Смартфоны — Бюджетные на Покупке — 46,5%</div><div class="pc__i">Комплектующие на Покупке — 43,6%</div><div class="pc__i">Ноутбуки на Покупке — 42,7%</div><div class="pc__i">Комплектующие на Выборе — 17,6%</div></div><div class="pc__c"><div class="pc__t" style="color:var(--wn)">Зоны риска</div><div class="pc__i">Смартфоны на Осознании — 0%</div><div class="pc__i">Телевизоры на Осознании — 0%</div><div class="pc__i">Смартфоны на Сравнении — 0,6%</div><div class="pc__i">Телевизоры на Сравнении — 3,1%</div></div></div></div></div>`);
+addNav('зоны роста','',oppIdx);
+
+const slidesEl=document.getElementById('slides'),navEl=document.getElementById('nav');
+slides.forEach((html,i)=>{const art=document.createElement('article');art.className='s'+(i===0?' s--a':'');art.dataset.s=i;art.innerHTML=html;slidesEl.appendChild(art)});
+navItems.forEach((ni,i)=>{const div=document.createElement('div');div.className='nav__i'+(i===0?' nav__i--on':'');div.dataset.i=i;div.innerHTML=(ni.icon?`<img class="nav__ico" src="${ni.icon}" alt="">`:'')+`<span class="nav__n">${String(i+1).padStart(2,'0')}</span> ${ni.label}`;div.onclick=()=>go(ni.slideIdx);navEl.appendChild(div)});
+const ss=Array.from(slidesEl.querySelectorAll('.s')),ns=Array.from(navEl.querySelectorAll('.nav__i')),ttl=ss.length;
+let ci=0,locking=false;document.getElementById('tot').textContent=ttl;
+function go(n){if(locking)return;locking=true;ci=Math.max(0,Math.min(n,ttl-1));ss.forEach((s,i)=>s.classList.toggle('s--a',i===ci));document.getElementById('cur').textContent=ci+1;document.getElementById('prev').disabled=ci===0;document.getElementById('next').disabled=ci===ttl-1;document.getElementById('home').style.display=ci===ttl-1?'':'none';ns.forEach((n,i)=>{n.classList.remove('nav__i--on','nav__i--vis');const ni=navItems[i];if(ni.slideIdx<ci)n.classList.add('nav__i--vis');else if(ni.slideIdx===ci){n.classList.add('nav__i--on');n.scrollIntoView({behavior:'smooth',inline:'center'})}});setTimeout(()=>{renderSlideContent(ss[ci]);locking=false},60)}
+document.getElementById('prev').onclick=()=>go(ci-1);document.getElementById('next').onclick=()=>go(ci+1);document.getElementById('home').onclick=()=>go(0);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(ci+1);if(e.key==='ArrowLeft')go(ci-1)});
+let wt=null;document.addEventListener('wheel',e=>{if(wt)return;wt=setTimeout(()=>wt=null,300);if(e.deltaY>10)go(ci+1);else if(e.deltaY<-10)go(ci-1)},{passive:true});
+
+const rendered=new Set();
+function animateBars(container){requestAnimationFrame(()=>{requestAnimationFrame(()=>{container.querySelectorAll('.bf[data-w],.fn__bar[data-w],.tc__bar-f[data-w]').forEach(el=>{el.style.width=el.dataset.w+'%'})})})}
+function animateCounters(container){container.querySelectorAll('[data-count]').forEach(el=>{const target=parseFloat(el.dataset.count),suffix=el.dataset.suffix||'',dur=1200,start=performance.now();function tick(t){const k=Math.min((t-start)/dur,1),e=1-Math.pow(1-k,3);el.textContent=(target*e).toFixed(target%1===0?0:1).replace('.',',')+suffix;if(k<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)})}
+function renderSlideContent(s){if(rendered.has(s))return;rendered.add(s);
+s.querySelectorAll('[data-chart="oBars"]').forEach(el=>{el.innerHTML=barHTML(D.ov,'v','b');animateBars(el)});
+s.querySelectorAll('[data-chart="oMentions"]').forEach(el=>{el.innerHTML=barHTML(D.ov.map(i=>({b:i.b,f:i.f,r:i.r})),'f','b',null,1);animateBars(el)});
+s.querySelectorAll('[data-chart="funnel"]').forEach(el=>{el.innerHTML=funnelHTML(D.fn);animateBars(el)});
+s.querySelectorAll('[data-chart="fFilter"]').forEach(el=>{el.innerHTML=D.fn.map(f=>`<button class="${f.s===1?'on':''}" data-s="${f.s}">${f.s}. ${f.n}</button>`).join('');el.onclick=e=>{if(e.target.tagName==='BUTTON'){el.querySelectorAll('button').forEach(b=>b.classList.remove('on'));e.target.classList.add('on');renderFD(ss[ci].querySelector('[data-chart="fDetail"]'),+e.target.dataset.s)}}});
+s.querySelectorAll('[data-chart="fDetail"]').forEach(el=>renderFD(el,1));
+s.querySelectorAll('[data-chart="topics"]').forEach(el=>{const mx=Math.max(...D.topics.map(t=>t.v));el.innerHTML=D.topics.map((t,ti)=>{const w=mx>0?(t.v/mx*100):0;const isR=t.t==='Комплектующие';return`<div class="tc" style="animation:fadeUp .5s var(--e) ${ti*.08}s both"><div class="tc__h" style="color:${isR?'var(--p)':'var(--pb)'}"><span style="display:flex;align-items:center">${topicIcons[ti]}</span> ${t.t}</div><div class="tc__v" style="color:${isR?'var(--p)':'var(--pb)'}">${p(t.v)}</div><div class="tc__l">Место: ${t.r} · Лидер: ${t.l}</div><div class="tc__bar"><div class="tc__bar-f" data-w="${w}" style="background:${isR?'linear-gradient(90deg,var(--pb),var(--p))':'linear-gradient(90deg,#94a3b8,#cbd5e1)'}"></div></div></div>`}).join('');animateBars(el)});
+s.querySelectorAll('[data-chart="topicFilter"]').forEach(el=>{el.innerHTML=D.topics.map((t,i)=>`<button class="${i===0?'on':''}" data-i="${i}">${t.t}</button>`).join('');el.onclick=e=>{if(e.target.tagName==='BUTTON'){el.querySelectorAll('button').forEach(b=>b.classList.remove('on'));e.target.classList.add('on');renderTD(ss[ci].querySelector('[data-chart="topicDetail"]'),+e.target.dataset.i)}}});
+s.querySelectorAll('[data-chart="topicDetail"]').forEach(el=>renderTD(el,0));
+modelOrder.forEach(md=>{const d=D.md[md];s.querySelectorAll(`[data-chart="mb_${md}"]`).forEach(el=>{el.innerHTML=barHTML(d.br,'v','b');animateBars(el)});s.querySelectorAll(`[data-chart="ms_${md}"]`).forEach(el=>{el.innerHTML=funnelHTML(d.sv.map((v,i)=>({v:v,lv:(d.lv?d.lv[i]:D.fn[i].lv),n:SN[i],l:(d.ld?d.ld[i]:D.fn[i].l),s:i+1})));animateBars(el)})});
+s.querySelectorAll('[data-chart="tonN"]').forEach(el=>{const mx=Math.max(...D.tonN.map(t=>t.p));el.innerHTML=D.tonN.map((t,i)=>{const w=mx>0?(t.p/mx*100):0;return`<div class="br" style="animation:fadeUp .4s var(--e) ${i*.05}s both"><span>${t.b}</span><div class="bt"><div class="bf bf--r" data-w="${w}"></div></div><b>${p(t.p)}</b></div>`}).join('');animateBars(el)});
+s.querySelectorAll('[data-chart="tonM"]').forEach(el=>{const mx=Math.max(...D.tonM.map(t=>t.p));el.innerHTML=D.tonM.map((t,i)=>{const w=mx>0?(t.p/mx*100):0;return`<div class="br" style="animation:fadeUp .4s var(--e) ${i*.04}s both"><span>${t.b}</span><div class="bt"><div class="bf bf--r" data-w="${w}"></div></div><b>${p(t.p)}</b></div>`}).join('');animateBars(el)});
+animateCounters(s);
+try{renderDonut()}catch(e){}
+const hm=s.querySelector('#hmT');if(hm){let h='<thead><tr><th>Модель</th>';SN.forEach(s=>h+=`<th>${s}</th>`);h+='</tr></thead><tbody>';Object.entries(D.md).forEach(([m,d])=>{h+=`<tr><td><img src="${ICO[m]}" alt="">${m}</td>`;d.sv.forEach(v=>{h+=`<td style="background:${hcBg(v)};color:${hcFg(v)}"><span class="hc">${p(v)}</span></td>`});h+='</tr>'});h+='</tbody>';hm.innerHTML=h}
+const ot=s.querySelector('#oppT');if(ot){const tb=ot.querySelector('tbody');tb.innerHTML=D.opp.map((o,i)=>{const z=o.z==='Критично'?'opp--e':o.z==='Низкая'?'opp--w':o.z==='Средняя'?'opp--a':'opp--r';return`<tr style="animation:fadeUp .4s var(--e) ${i*.05}s both"><td>${o.p}</td><td>${o.t}</td><td>${o.st}</td><td>${o.v}</td><td>${o.l}</td><td>${o.g}</td><td><span class="opp ${z}">${o.z}</span></td></tr>`}).join('')}}
+function renderFD(el,s){const items=D.ft[s]||[];const mx=Math.max(...items.map(i=>i.v));el.innerHTML=`<div class="c" style="flex:none"><div class="c__t">Этап ${s}: ${D.fn[s-1].n}</div><div class="bc">${items.map((i,idx)=>{const r=i.r,w=mx>0?(i.v/mx*100):0;return`<div class="br${r?' br--r':''}" style="animation:fadeUp .4s var(--e) ${idx*.05}s both"><span>${i.b}</span><div class="bt"><div class="bf${r?' bf--r':' bf--b'}" data-w="${w}"></div></div><b>${p(i.v)}</b></div>`}).join('')}</div></div>`;animateBars(el)}
+function renderTD(el,i){const t=D.topics[i]||D.topics[0];const mx=Math.max(...t.sub.map(s=>s.v));el.innerHTML=`<div class="c" style="flex:none"><div class="c__t">${t.t} — подтемы</div><div class="bc">${t.sub.map((s,idx)=>{const w=mx>0?(s.v/mx*100):0;return`<div class="br" style="animation:fadeUp .4s var(--e) ${idx*.04}s both"><span>${s.t}</span><div class="bt"><div class="bf bf--b" data-w="${w}"></div></div><b>${p(s.v)}</b></div>`}).join('')}</div></div>`;animateBars(el)}
+Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.font.size=9;Chart.defaults.color='#1a1a2e';let donutChart=null;
+function renderDonut(){const c=document.getElementById('sovC');if(!c||!c.getContext)return;if(donutChart)donutChart.destroy();const labels=D.sov.map(s=>s.b),vals=D.sov.map(s=>s.s),total=vals.reduce((a,b)=>a+b,0),colors=D.sov.map((s,i)=>s.r?'#ff6a00':['#94a3b8','#cbd5e1','#e2e8f0','#64748b','#475569','#334155','#1e293b'][i]);donutChart=new Chart(c,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:3,borderColor:'#fff',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:true,cutout:'58%',animation:{animateRotate:true,animateScale:true,duration:1200,easing:'easeOutQuart'},plugins:{legend:{position:'bottom',labels:{padding:6,usePointStyle:true,pointStyle:'circle',font:{size:8,weight:600}}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${(ctx.parsed/total*100).toFixed(1)}%`}}}}})}
+renderSlideContent(ss[0]);
+</script>
+</body>
+</html>
