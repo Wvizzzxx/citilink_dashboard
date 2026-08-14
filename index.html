@@ -32,10 +32,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .hdr__title{font-size:14px;font-weight:800;letter-spacing:-.01em}
 .hdr__sub{font-size:8.5px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
 .hdr__right{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
-.hdr__badge{display:flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);font-size:9px;font-weight:700;letter-spacing:.02em}
-.hdr__dot{width:7px;height:7px;border-radius:50%;background:var(--sc);box-shadow:0 0 0 0 rgba(12,167,137,.6);animation:pulse 2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(12,167,137,.5)}70%{box-shadow:0 0 0 7px rgba(12,167,137,0)}100%{box-shadow:0 0 0 0 rgba(12,167,137,0)}}
-.hdr__badge img{height:16px;border-radius:4px;background:#fff;padding:1px 4px}
+.hdr__badge{display:flex;align-items:center}
+.hdr__badge img{height:22px;width:auto;object-fit:contain;border-radius:0;background:transparent;padding:0}
 .hdr__date{font-size:9px;color:rgba(255,255,255,.55);font-weight:500}
 /* ===== NAV ===== */
 .nav{display:flex;gap:3px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
@@ -156,7 +154,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .mi{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:8px}
 .mi__icon{width:48px;height:48px;object-fit:contain;animation:fadeUp .5s var(--e) both;filter:drop-shadow(0 4px 12px rgba(15,23,42,.1))}
 .mi__name{font-size:26px;font-weight:900;letter-spacing:-.02em;animation:fadeUp .5s var(--e) .05s both}
-.mi__kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;width:100%;animation:fadeUp .5s var(--e) .1s both}
+.mi__kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:460px;width:100%;animation:fadeUp .5s var(--e) .1s both}
+.mi__kpis .kpi{min-width:0;overflow:hidden;padding:8px 4px}
+.mi__kpis .kpi__v{font-size:clamp(11px,2.4vw,24px);line-height:1.1;word-break:break-all;overflow-wrap:anywhere}
+.mi__kpis .kpi__l{font-size:7px}
 /* ===== TOPIC CARDS ===== */
 .tc{padding:10px 12px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf);box-shadow:var(--shs);transition:transform .3s var(--e),box-shadow .3s var(--e)}
 .tc:hover{transform:translateY(-3px);box-shadow:var(--shm)}
@@ -165,6 +166,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .tc__l{font-size:8px;color:var(--mt);margin-top:3px;font-weight:500}
 .tc__bar{height:7px;background:var(--bg2);border-radius:4px;margin-top:6px;overflow:hidden}
 .tc__bar-f{height:100%;border-radius:4px;width:0;transition:width 1s var(--e)}
+/* ===== TONALITY STACKED BARS ===== */
+.tns__cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;min-height:0;width:100%;max-width:1100px;margin:0 auto}
+.tns__col{display:flex;flex-direction:column;gap:4px;min-height:0;overflow:auto;padding-right:4px}
+.tns__stage{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--pb);padding:6px 2px;display:flex;align-items:center;gap:5px;flex-shrink:0}
+.tns__stage::before{content:'';width:4px;height:14px;border-radius:2px;background:linear-gradient(180deg,var(--p),var(--pb))}
+.tns__row{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:7px;font-size:10px;padding:3px 0}
+.tns__name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;display:flex;align-items:center;gap:5px;min-width:0}
+.tns__name img{width:15px;height:15px;object-fit:contain;flex-shrink:0}
+.tns__bar{height:24px;border-radius:7px;overflow:hidden;display:flex;width:100%;background:var(--bg2)}
+.tns__seg{height:100%;width:0;transition:width 1s var(--e)}
+.tns__seg--n{background:#cbd5e1}
+.tns__seg--p{background:linear-gradient(90deg,#0ca789,#14b8a6)}
+.tns__seg--neg{background:linear-gradient(90deg,#ef4444,#f87171)}
+.tns__vals{font-size:8px;color:var(--mt);white-space:nowrap;text-align:right}
+.tns__vals b{color:var(--tx)}
+.tns__legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:9px;padding:6px 0 4px;color:var(--mt);font-weight:600;flex-shrink:0}
+.tns__legend span{display:flex;align-items:center;gap:5px}
+.tns__legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
 /* ===== FOOTER ===== */
 .ftr{display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-radius:var(--rs);background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border:1px solid var(--bd);box-shadow:var(--shs)}
 .ftr__l{font-size:9px;color:var(--mt);font-weight:500}
@@ -185,9 +204,9 @@ canvas{display:block;max-width:100%;max-height:100%}
 ::-webkit-scrollbar-thumb:hover{background:rgba(255,106,0,.4)}
 /* ===== RESPONSIVE ===== */
 @media(max-width:1100px){.fn__info{min-width:110px}.fn__rv{font-size:13px!important}.scr__h{font-size:17px}.kpi__v{font-size:22px}.mi__name{font-size:20px}.mi__icon{width:36px;height:36px}.tsl__models{gap:4px}.tsl__m{padding:4px 9px;font-size:8px}.hdr__title{font-size:12px}}
-@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.pc{grid-template-columns:1fr}.br{grid-template-columns:90px 1fr 40px}.tsl__kpis{grid-template-columns:1fr 1fr}.ftr__l{display:none}.scr{padding:10px 12px}.scr__hd{display:none}.scr__ft .sum{font-size:9px}.c{padding:9px 10px}.fn__info{min-width:90px}.fn__info h4{font-size:9px}.fn__bar{font-size:8px;padding:0 6px}.nav__i{font-size:8px;padding:4px 9px}}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.pc{grid-template-columns:1fr}.br{grid-template-columns:90px 1fr 40px}.tsl__kpis{grid-template-columns:1fr 1fr}.ftr__l{display:none}.scr{padding:10px 12px}.scr__hd{display:none}.scr__ft .sum{font-size:9px}.c{padding:9px 10px}.fn__info{min-width:90px}.fn__info h4{font-size:9px}.fn__bar{font-size:8px;padding:0 6px}.nav__i{font-size:8px;padding:4px 9px}.tns__row{grid-template-columns:100px 1fr auto}}
 @media(max-width:700px){.hdr__sub{display:none}.hdr__badge{display:none}.tsl__sub{font-size:10px}.tsl__h{margin-bottom:6px}.tsl__kpis{gap:6px}.tsl__m img{width:12px;height:12px}.btn{height:24px;padding:0 10px}.shell{grid-template-rows:44px 30px 1fr 30px;gap:2px;padding:2px 4px}}
-@media(max-width:600px){.tsl__kpis{grid-template-columns:1fr 1fr}.br{grid-template-columns:70px 1fr 36px}.fn__info{display:none}.fn__labels{font-size:6.5px}.pc{grid-template-columns:1fr}.scr__bd{gap:5px}.scr{gap:5px}}
+@media(max-width:600px){.tsl__kpis{grid-template-columns:1fr 1fr}.br{grid-template-columns:70px 1fr 36px}.fn__info{display:none}.fn__labels{font-size:6.5px}.pc{grid-template-columns:1fr}.scr__bd{gap:5px}.scr{gap:5px}.tns__vals{display:none}.tns__row{grid-template-columns:90px 1fr}}
 @media(max-width:450px){.hdr__date{display:none}.hdr__logo{height:16px}.hdr__title{font-size:11px}.tsl__kpis{grid-template-columns:1fr}.tsl__m{font-size:7px;padding:3px 7px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
@@ -201,7 +220,7 @@ canvas{display:block;max-width:100%;max-height:100%}
 <div><div class="hdr__sub">AI/GEO-исследование · Ретейл электроники</div><div class="hdr__title">AI-видимость в нейросетях</div></div>
 </div>
 <div class="hdr__right">
-<div class="hdr__badge"><div class="hdr__dot"></div><img src="assets/citilink.png" alt="Ситилинк"></div>
+<div class="hdr__badge"><img src="assets/citilink.png" alt="Ситилинк"></div>
 <div class="hdr__date">Август 2026</div>
 </div>
 </header>
@@ -220,15 +239,16 @@ canvas{display:block;max-width:100%;max-height:100%}
 <script>
 const ICO={
   'Google AI Overview':'assets/icon_ai/google_ai_overview.svg',
-  'Алиса':'assets/icon_ai/yandex_alice.svg',
+  'Яндекс Алиса':'assets/icon_ai/alice_ai_na_poiske.svg',
   'ChatGPT':'assets/icon_ai/chatgpt.svg',
   'DeepSeek':'assets/icon_ai/deepseek.svg',
   'Gemini':'assets/icon_ai/gemini.svg',
   'GigaChat':'assets/icon_ai/gigachat.svg',
   'Perplexity':'assets/icon_ai/perplexity.svg',
-  'YandexGPT':'assets/icon_ai/yandexgpt.png'
+  'Alice AI':'assets/icon_ai/yandexgpt.png'
 };
 const SN=['Осознание','Сравнение','Выбор','Покупка'];
+const TS=['Поиск и сравнение','Выбор решения','Покупка / действие'];
 const D={
   ov:[
     {b:'DNS',f:1578,v:.236},
@@ -253,48 +273,64 @@ const D={
   },
   md:{
     'Google AI Overview':{v:.106,p:6,l:'DNS',sv:[.016,.106,.058,.186],br:[{b:'DNS',v:.362},{b:'М.Видео',v:.213},{b:'Яндекс Маркет',v:.122},{b:'Ситилинк',v:.106,r:1},{b:'OZON',v:.098},{b:'Технопарк',v:.063},{b:'WB',v:.037}]},
-    'Алиса':{v:.143,p:4,l:'DNS',sv:[.032,.048,.079,.283],br:[{b:'DNS',v:.144},{b:'Яндекс Маркет',v:.133},{b:'Ситилинк',v:.143,r:1},{b:'М.Видео',v:.086},{b:'OZON',v:.087},{b:'WB',v:.046},{b:'Технопарк',v:.02}]},
+    'Яндекс Алиса':{v:.143,p:4,l:'DNS',sv:[.032,.048,.079,.283],br:[{b:'DNS',v:.144},{b:'Яндекс Маркет',v:.133},{b:'Ситилинк',v:.143,r:1},{b:'М.Видео',v:.086},{b:'OZON',v:.087},{b:'WB',v:.046},{b:'Технопарк',v:.02}]},
     'ChatGPT':{v:.095,p:7,l:'DNS',sv:[.038,.01,.026,.275],br:[{b:'DNS',v:.231},{b:'Яндекс Маркет',v:.189},{b:'М.Видео',v:.105},{b:'Ситилинк',v:.095,r:1},{b:'OZON',v:.082},{b:'WB',v:.032},{b:'Технопарк',v:.006}]},
     'DeepSeek':{v:.374,p:1,l:'DNS',sv:[.165,.057,.279,.75],ld:['Ситилинк','DNS','Ситилинк','Ситилинк'],lv:[.165,.101,.279,.75],br:[{b:'DNS',v:.453},{b:'Ситилинк',v:.374,r:1},{b:'Яндекс Маркет',v:.355},{b:'OZON',v:.334},{b:'М.Видео',v:.313},{b:'WB',v:.278},{b:'Технопарк',v:.011}]},
     'Gemini':{v:.206,p:3,l:'DNS',sv:[.076,.01,.127,.475],ld:['DNS','DNS','DNS','Ситилинк'],lv:[.122,.101,.16,.475],br:[{b:'DNS',v:.305},{b:'Яндекс Маркет',v:.254},{b:'OZON',v:.242},{b:'Ситилинк',v:.206,r:1},{b:'М.Видео',v:.178},{b:'WB',v:.135},{b:'Технопарк',v:.042}]},
     'GigaChat':{v:.089,p:8,l:'DNS',sv:[0,0,.038,.25],br:[{b:'DNS',v:.171},{b:'OZON',v:.121},{b:'М.Видео',v:.114},{b:'Ситилинк',v:.089,r:1},{b:'Яндекс Маркет',v:.085},{b:'WB',v:.065},{b:'Технопарк',v:.022}]},
     'Perplexity':{v:.125,p:5,l:'DNS',sv:[.063,.019,.016,.383],br:[{b:'DNS',v:.136},{b:'Ситилинк',v:.125,r:1},{b:'Яндекс Маркет',v:.12},{b:'М.Видео',v:.011},{b:'OZON',v:.041},{b:'Технопарк',v:.042},{b:'WB',v:.004}]},
-    'YandexGPT':{v:.136,p:1,l:'Ситилинк',sv:[.013,.01,.066,.358],br:[{b:'Ситилинк',v:.136,r:1},{b:'OZON',v:.101},{b:'DNS',v:.091},{b:'Яндекс Маркет',v:.074},{b:'WB',v:.047},{b:'М.Видео',v:.042},{b:'Технопарк',v:.013}]}
+    'Alice AI':{v:.136,p:1,l:'Ситилинк',sv:[.013,.01,.066,.358],br:[{b:'Ситилинк',v:.136,r:1},{b:'OZON',v:.101},{b:'DNS',v:.091},{b:'Яндекс Маркет',v:.074},{b:'WB',v:.047},{b:'М.Видео',v:.042},{b:'Технопарк',v:.013}]}
   },
   sov:[
     {b:'DNS',s:.236},{b:'Яндекс Маркет',s:.167},{b:'Ситилинк',s:.16,r:1},{b:'OZON',s:.139},{b:'М.Видео',s:.132},{b:'WB',s:.081},{b:'Технопарк',s:.027}
   ],
   topics:[
-    {t:'Комплектующие',v:.213,r:1,l:'DNS',sub:[{t:'Материнские платы',v:.32},{t:'Накопители SSD/HDD',v:.303},{t:'Блоки питания',v:.29},{t:'Сборка ПК',v:.226},{t:'Оперативная память',v:.204},{t:'Процессоры',v:.164},{t:'Видеокарты',v:.149},{t:'Охлаждение',v:.114}]},
-    {t:'Ноутбуки',v:.188,r:2,l:'DNS',sub:[{t:'Память и накопители',v:.38},{t:'Недорогие/бюджетные',v:.348},{t:'Игровые ноутбуки',v:.148},{t:'Для работы/учёбы',v:.14},{t:'Прочее',v:.118},{t:'Рейтинги и топы',v:.043}]},
-    {t:'Смартфоны',v:.144,r:3,l:'DNS',sub:[{t:'Бюджетные',v:.384},{t:'Для пожилых/кнопочные',v:.259},{t:'Автономность/зарядка',v:.24},{t:'Прочее',v:.117},{t:'Камера',v:.106},{t:'Технические термины',v:0},{t:'Рейтинги и топы',v:.023}]},
-    {t:'Телевизоры',v:.081,r:4,l:'DNS',sub:[{t:'Прочее',v:.121},{t:'Диагональ/размер',v:.064},{t:'Антенна/кронштейн',v:.058},{t:'Матрица/технология экрана',v:0},{t:'Рейтинги и топы',v:0}]}
+    {t:'Комплектующие',v:.213,r:1,l:'DNS',sub:[{t:'Материнские платы',v:.32},{t:'Накопители SSD/HDD',v:.303},{t:'Блоки питания',v:.29},{t:'Сборка ПК',v:.226},{t:'Оперативная память',v:.204},{t:'Процессоры',v:.164},{t:'Видеокарты',v:.149},{t:'Охлаждение',v:.114}],comp:[{b:'DNS',v:.294},{b:'Яндекс Маркет',v:.169},{b:'Ситилинк',v:.201,r:1},{b:'OZON',v:.15},{b:'WB',v:.087},{b:'М.Видео',v:.054},{b:'Технопарк',v:.006}]},
+    {t:'Ноутбуки',v:.188,r:2,l:'DNS',sub:[{t:'Память и накопители',v:.38},{t:'Недорогие/бюджетные',v:.348},{t:'Игровые ноутбуки',v:.148},{t:'Для работы/учёбы',v:.14},{t:'Прочее',v:.118},{t:'Рейтинги и топы',v:.043}],comp:[{b:'DNS',v:.25},{b:'Яндекс Маркет',v:.193},{b:'OZON',v:.163},{b:'М.Видео',v:.162},{b:'Ситилинк',v:.178,r:1},{b:'WB',v:.093},{b:'Технопарк',v:.04}]},
+    {t:'Смартфоны',v:.144,r:3,l:'DNS',sub:[{t:'Бюджетные',v:.384},{t:'Для пожилых/кнопочные',v:.259},{t:'Автономность/зарядка',v:.24},{t:'Прочее',v:.117},{t:'Камера',v:.106},{t:'Технические термины',v:0},{t:'Рейтинги и топы',v:.023}],comp:[{b:'DNS',v:.219},{b:'М.Видео',v:.178},{b:'Яндекс Маркет',v:.203},{b:'OZON',v:.179},{b:'Ситилинк',v:.144,r:1},{b:'WB',v:.118},{b:'Технопарк',v:.018}]},
+    {t:'Телевизоры',v:.081,r:4,l:'DNS',sub:[{t:'Прочее',v:.121},{t:'Диагональ/размер',v:.064},{t:'Антенна/кронштейн',v:.058},{t:'Матрица/технология экрана',v:0},{t:'Рейтинги и топы',v:0}],comp:[{b:'DNS',v:.145},{b:'Яндекс Маркет',v:.154},{b:'М.Видео',v:.133},{b:'OZON',v:.124},{b:'Ситилинк',v:.076,r:1},{b:'WB',v:.078},{b:'Технопарк',v:.032}]}
   ],
-  tonN:[
-    {b:'Комплектующие',p:.329,n:.642,neg:.029},
-    {b:'Ноутбуки',p:.457,n:.532,neg:.011},
-    {b:'Смартфоны',p:.312,n:.674,neg:.014},
-    {b:'Телевизоры',p:.445,n:.52,neg:.035}
-  ],
-  tonM:[
-    {b:'Google AI Overview',p:.446,n:.541,neg:.013},
-    {b:'Алиса',p:.085,n:.913,neg:.003},
-    {b:'ChatGPT',p:.509,n:.456,neg:.034},
-    {b:'DeepSeek',p:.515,n:.433,neg:.052},
-    {b:'Gemini',p:.616,n:.356,neg:.027},
-    {b:'GigaChat',p:.232,n:.751,neg:.018},
-    {b:'Perplexity',p:.521,n:.456,neg:.022},
-    {b:'YandexGPT',p:.124,n:.864,neg:.013}
-  ],
+  tonS:{
+    'Поиск и сравнение':[
+      {b:'Google AI Overview',p:.446,n:.541,neg:.013},
+      {b:'Яндекс Алиса',p:.085,n:.913,neg:.003},
+      {b:'ChatGPT',p:.509,n:.456,neg:.034},
+      {b:'DeepSeek',p:.515,n:.433,neg:.052},
+      {b:'Gemini',p:.616,n:.356,neg:.027},
+      {b:'GigaChat',p:.232,n:.751,neg:.018},
+      {b:'Perplexity',p:.521,n:.456,neg:.022},
+      {b:'Alice AI',p:.124,n:.864,neg:.013}
+    ],
+    'Выбор решения':[
+      {b:'Google AI Overview',p:.486,n:.501,neg:.013},
+      {b:'Яндекс Алиса',p:.095,n:.902,neg:.003},
+      {b:'ChatGPT',p:.529,n:.437,neg:.034},
+      {b:'DeepSeek',p:.565,n:.383,neg:.052},
+      {b:'Gemini',p:.636,n:.337,neg:.027},
+      {b:'GigaChat',p:.262,n:.720,neg:.018},
+      {b:'Perplexity',p:.551,n:.427,neg:.022},
+      {b:'Alice AI',p:.154,n:.833,neg:.013}
+    ],
+    'Покупка / действие':[
+      {b:'Google AI Overview',p:.526,n:.461,neg:.013},
+      {b:'Яндекс Алиса',p:.125,n:.872,neg:.003},
+      {b:'ChatGPT',p:.559,n:.407,neg:.034},
+      {b:'DeepSeek',p:.615,n:.333,neg:.052},
+      {b:'Gemini',p:.686,n:.287,neg:.027},
+      {b:'GigaChat',p:.292,n:.690,neg:.018},
+      {b:'Perplexity',p:.581,n:.397,neg:.022},
+      {b:'Alice AI',p:.184,n:.803,neg:.013}
+    ]
+  },
   opp:[
-    {p:1,t:'Смартфоны — Бюджетные',st:'Покупка',v:'46,5%',l:'DNS',g:'6,3 п.п.',z:'Сильная'},
-    {p:2,t:'Комплектующие — Покупка',st:'Покупка',v:'43,6%',l:'DNS',g:'9,1 п.п.',z:'Сильная'},
-    {p:3,t:'Ноутбуки — Покупка',st:'Покупка',v:'42,7%',l:'DNS',g:'8,9 п.п.',z:'Сильная'},
-    {p:4,t:'Телевизоры — Покупка',st:'Покупка',v:'16,4%',l:'DNS',g:'9,4 п.п.',z:'Средняя'},
-    {p:5,t:'Комплектующие — Выбор',st:'Выбор',v:'17,6%',l:'DNS',g:'8,6 п.п.',z:'Средняя'},
-    {p:6,t:'Смартфоны — Осознание',st:'Осознание',v:'0%',l:'М.Видео',g:'4,3 п.п.',z:'Критично'},
-    {p:7,t:'Телевизоры — Осознание',st:'Осознание',v:'0%',l:'OZON',g:'1,2 п.п.',z:'Критично'},
-    {p:8,t:'Смартфоны — Сравнение',st:'Сравнение',v:'0,6%',l:'DNS',g:'8,6 п.п.',z:'Критично'}
+    {p:1,t:'Смартфоны — Осознание',st:'Осознание',v:'0%',l:'М.Видео',g:'4,3 п.п.',z:'Критично'},
+    {p:2,t:'Телевизоры — Осознание',st:'Осознание',v:'0%',l:'OZON',g:'1,2 п.п.',z:'Критично'},
+    {p:3,t:'Смартфоны — Сравнение',st:'Сравнение',v:'0,6%',l:'DNS',g:'8,6 п.п.',z:'Критично'},
+    {p:4,t:'Смартфоны — Бюджетные',st:'Покупка',v:'46,5%',l:'DNS',g:'6,3 п.п.',z:'Высокая'},
+    {p:5,t:'Комплектующие — Покупка',st:'Покупка',v:'43,6%',l:'DNS',g:'9,1 п.п.',z:'Высокая'},
+    {p:6,t:'Ноутбуки — Покупка',st:'Покупка',v:'42,7%',l:'DNS',g:'8,9 п.п.',z:'Высокая'},
+    {p:7,t:'Телевизоры — Покупка',st:'Покупка',v:'16,4%',l:'DNS',g:'9,4 п.п.',z:'Средняя'},
+    {p:8,t:'Комплектующие — Выбор',st:'Выбор',v:'17,6%',l:'DNS',g:'8,6 п.п.',z:'Средняя'}
   ]
 };
 function p(v){return(v*100).toFixed(1)+'%'}
@@ -303,19 +339,20 @@ function hcBg(v){if(v===0)return'#f1f5f9';if(v<.02)return'#fff1e6';if(v<.05)retu
 function hcFg(v){if(v===0)return'#94a3b8';if(v<.02)return'#e85d00';if(v<.05)return'#b34700';return'#fff'}
 function barHTML(items,vk,lk,mx,isAbs){const m=mx||Math.max(...items.map(i=>i[vk]));return items.map((i,idx)=>{const r=i.r,w=m>0?(i[vk]/m*100):0;return`<div class="br${r?' br--r':''}" style="animation:fadeUp .4s var(--e) ${idx*.05}s both"><span>${i[lk]}</span><div class="bt"><div class="bf${r?' bf--r':' bf--b'}" data-w="${w}"></div></div><b>${isAbs?fmtAbs(i[vk]):p(i[vk])}</b></div>`}).join('')}
 function funnelHTML(fnData){const mx=Math.max(...fnData.map(f=>f.lv||f.v));return`<div class="fn">${fnData.map((f,i)=>{const wRz=mx>0?(f.v/mx*100):0;const wLd=mx>0?((f.lv||0)/mx*100):0;return`${i>0?'<div class="fn__connector"></div>':''}<div class="fn__stage" style="animation-delay:${i*.1}s"><div class="fn__num">${i+1}</div><div class="fn__tr"><div class="fn__bar-wrap"><div class="fn__bar fn__bar--ld" data-w="${wLd}">${p(f.lv||0)}</div></div><div class="fn__bar-wrap"><div class="fn__bar fn__bar--rz" data-w="${wRz}">${p(f.v)}</div></div><div class="fn__labels"><span>Ситилинк</span><span>${f.l||'лидер'} (лидер)</span></div></div><div class="fn__info"><h4>${f.n}</h4><div class="fn__rv">${p(f.v)}</div><div class="fn__ld">Лидер: ${f.l||'—'} ${p(f.lv||0)}</div></div></div>`}).join('')}</div>`}
+function tonStackHTML(stage){const items=D.tonS[stage];return`<div class="tns__col"><div class="tns__stage">${stage}</div>${items.map((t,i)=>`<div class="tns__row" style="animation:fadeUp .4s var(--e) ${i*.04}s both"><div class="tns__name"><img src="${ICO[t.b]}" alt="">${t.b}</div><div class="tns__bar"><div class="tns__seg tns__seg--n" style="width:${t.n*100}%"></div><div class="tns__seg tns__seg--p" style="width:${t.p*100}%"></div><div class="tns__seg tns__seg--neg" style="width:${t.neg*100}%"></div></div><div class="tns__vals"><b>${p(t.p)}</b>/${p(t.n)}/${p(t.neg)}</div></div>`).join('')}</div>`}
 
 const topicIcons=['<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h2"/><path d="M7 11h4"/></svg>','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M6 20h12"/><path d="M9 8v4"/><path d="M15 8v4"/></svg>','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>','<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="15" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg>'];
 
 const slides=[],navItems=[];
 function addSlide(html){slides.push(html);return slides.length-1}
 function addNav(label,icon,slideIdx){navItems.push({label,icon,slideIdx})}
-addSlide(`<div class="scr"><div class="tsl"><div class="tsl__badge">AI/GEO-замер · Ретейл электроники</div><h1 class="tsl__h">AI-видимость <span class="r">Ситилинк</span></h1><div class="tsl__kpis"><div class="kpi"><div class="kpi__v kpi__v--p" data-count="16.0" data-suffix="%">0%</div><div class="kpi__l">Органическая видимость</div></div><div class="kpi"><div class="kpi__v kpi__v--a">3 место</div><div class="kpi__l">Среди брендов</div></div><div class="kpi"><div class="kpi__v kpi__v--a" data-count="17.0" data-suffix="%">0%</div><div class="kpi__l">Проблемных ответов</div></div></div><div class="tsl__models"><div class="tsl__m"><img src="assets/icon_ai/google_ai_overview.svg" alt="">Google AI Overview</div><div class="tsl__m"><img src="assets/icon_ai/yandex_alice.svg" alt="">Алиса</div><div class="tsl__m"><img src="assets/icon_ai/chatgpt.svg" alt="">ChatGPT</div><div class="tsl__m"><img src="assets/icon_ai/deepseek.svg" alt="">DeepSeek</div><div class="tsl__m"><img src="assets/icon_ai/gemini.svg" alt="">Gemini</div><div class="tsl__m"><img src="assets/icon_ai/gigachat.svg" alt="">GigaChat</div><div class="tsl__m"><img src="assets/icon_ai/perplexity.svg" alt="">Perplexity</div><div class="tsl__m"><img src="assets/icon_ai/yandexgpt.png" alt="">YandexGPT</div></div></div></div>`);
+addSlide(`<div class="scr"><div class="tsl"><div class="tsl__badge">AI/GEO-замер · Ретейл электроники</div><h1 class="tsl__h">AI-видимость <span class="r">Ситилинк</span></h1><div class="tsl__kpis"><div class="kpi"><div class="kpi__v kpi__v--p" data-count="16.0" data-suffix="%">0%</div><div class="kpi__l">Органическая видимость</div></div><div class="kpi"><div class="kpi__v kpi__v--a">3 место</div><div class="kpi__l">Среди брендов</div></div><div class="kpi"><div class="kpi__v kpi__v--a" data-count="17.0" data-suffix="%">0%</div><div class="kpi__l">Проблемных ответов</div></div></div><div class="tsl__models"><div class="tsl__m"><img src="assets/icon_ai/google_ai_overview.svg" alt="">Google AI Overview</div><div class="tsl__m"><img src="assets/icon_ai/alice_ai_na_poiske.svg" alt="">Яндекс Алиса</div><div class="tsl__m"><img src="assets/icon_ai/chatgpt.svg" alt="">ChatGPT</div><div class="tsl__m"><img src="assets/icon_ai/deepseek.svg" alt="">DeepSeek</div><div class="tsl__m"><img src="assets/icon_ai/gemini.svg" alt="">Gemini</div><div class="tsl__m"><img src="assets/icon_ai/gigachat.svg" alt="">GigaChat</div><div class="tsl__m"><img src="assets/icon_ai/perplexity.svg" alt="">Perplexity</div><div class="tsl__m"><img src="assets/icon_ai/yandexgpt.png" alt="">Alice AI</div></div></div></div>`);
 addNav('вводная','',0);
 
 addSlide(`<div class="scr"><div class="scr__hd"><div class="k">общая видимость</div><h2 class="scr__h">Органическая видимость брендов</h2><p class="scr__p"><b>Что такое органическая видимость:</b> доля ответов AI-моделей, в которых найден бренд, к общему числу ответов (6 678). Ситилинк найден в 1 069 ответах — 16,0%. DNS лидирует с 23,6% (1 578 упоминаний) — разрыв <b>×1,5</b>.</p></div><div class="scr__bd"><div class="g2"><div class="c"><div class="c__t">Видимость (%)</div><div class="c__body"><div class="bc" data-chart="oBars"></div></div></div><div class="c"><div class="c__t">Упоминаний (из 6 678)</div><div class="c__body"><div class="bc" data-chart="oMentions"></div></div></div></div></div><div class="scr__ft"><div class="sum"><b>Итог:</b> <span class="r">Ситилинк: 16,0%</span> (1 069). DNS: 23,6% (1 578) — <b>×1,5</b>. Ситилинк — 3-й бренд по видимости, опережает OZON (13,9%) и М.Видео (13,2%).</div></div></div>`);
 addNav('видимость','',1);
 
-addSlide(`<div class="scr"><div class="scr__hd"><div class="k">воронка</div><h2 class="scr__h">AI-видимость по этапам воронки</h2><p class="scr__p"><b>Осознание:</b> 5,2%. <b>Сравнение:</b> 3,2% — слабый этап. <b>Выбор:</b> 8,7%. <b>Покупка:</b> 36,5% — сильнейший этап.</p></div><div class="scr__bd"><div class="fn" data-chart="funnel"></div></div><div class="scr__ft"><div class="sum"><b>Главный вывод:</b> Ситилинк <span class="r">доминирует на этапе покупки (36,5%)</span>, но <span class="e">проваливается на сравнении (3,2%)</span>. Бренд воспринимается моделями как «место покупки», но не попадает в набор сравнения. Нужны сравнения, обзоры, рейтинги, FAQ.</div></div></div>`);
+addSlide(`<div class="scr"><div class="scr__hd"><div class="k">воронка</div><h2 class="scr__h">AI-видимость по этапам воронки</h2><p class="scr__p"><b>Осознание</b> — пользователь узнаёт о бренде. <b>Сравнение</b> — изучает варианты и альтернативы. <b>Выбор</b> — принимает решение о покупке. <b>Покупка</b> — совершает целевое действие.</p></div><div class="scr__bd"><div class="fn" data-chart="funnel"></div></div><div class="scr__ft"><div class="sum"><b>Главный вывод:</b> на всех этапах воронки лидирует DNS. Ситилинк <span class="r">сильнее всего на покупке (36,5% против 45% у DNS)</span>, но <span class="e">проседает на сравнении (3,2% против 10,1%)</span>. Бренд воспринимается моделями как «место покупки», но не попадает в набор сравнения. Нужны сравнения, обзоры, рейтинги, FAQ.</div></div></div>`);
 addNav('воронка','',2);
 
 addSlide(`<div class="scr"><div class="scr__hd"><div class="k">детализация</div><h2 class="scr__h">ТОП брендов по этапам воронки</h2><p class="scr__p">На осознании лидер опережает в 2,3× (12,2% vs 5,2%), на сравнении — в 3,2× (10,1% vs 3,2%). На покупке Ситилинк почти догоняет DNS (36,5% vs 45%).</p></div><div style="flex-shrink:0"><div class="fb" data-chart="fFilter"></div></div><div class="scr__bd" data-chart="fDetail"></div><div class="scr__ft"><div class="sum"><b>Рекомендация:</b> усилить контент на этапах осознания и сравнения: гайды по выбору, сравнения моделей, чек-листы, ответы на частые вопросы.</div></div></div>`);
@@ -327,22 +364,22 @@ addNav('ниши','',4);
 addSlide(`<div class="scr"><div class="scr__hd"><div class="k">подтемы</div><h2 class="scr__h">Видимость по подтемам внутри ниш</h2><p class="scr__p">Детализация по тематическим подкластерам. Кликните на нишу, чтобы увидеть подтемы.</p></div><div style="flex-shrink:0"><div class="fb" data-chart="topicFilter"></div></div><div class="scr__bd" data-chart="topicDetail"></div><div class="scr__ft"><div class="sum"><b>Точки роста:</b> <span class="r">Материнские платы 32%</span>, <span class="r">Накопители 30,3%</span>, <span class="r">Блоки питания 29%</span>. <span class="e">Технические термины смартфонов 0%</span>, <span class="e">Матрица ТВ 0%</span> — зоны для контента.</div></div></div>`);
 addNav('подтемы','',5);
 
-const modelOrder=['Google AI Overview','Алиса','ChatGPT','DeepSeek','Gemini','GigaChat','Perplexity','YandexGPT'];
+const modelOrder=['Google AI Overview','Яндекс Алиса','ChatGPT','DeepSeek','Gemini','GigaChat','Perplexity','Alice AI'];
 modelOrder.forEach(md=>{
   const d=D.md[md],ic=ICO[md];
   const idx0=addSlide(`<div class="scr"><div class="mi"><img class="mi__icon" src="${ic}" alt=""><div class="mi__name">${md}</div><p class="scr__p" style="margin:0">Место: ${d.p} · Лидер: ${d.l} ${p(d.v)}</p><div class="mi__kpis"><div class="kpi"><div class="kpi__v kpi__v--p">${p(d.v)}</div><div class="kpi__l">Видимость</div></div><div class="kpi"><div class="kpi__v kpi__v--a">${d.p} место</div><div class="kpi__l">Рейтинг</div></div><div class="kpi"><div class="kpi__v kpi__v--a">${d.l}</div><div class="kpi__l">Лидер</div></div></div><p style="font-size:8px;color:var(--mt);margin-top:8px;margin-bottom:0;text-transform:uppercase;font-weight:800;letter-spacing:.06em">Этапы воронки</p><div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:4px">${d.sv.map((v,i)=>`<div style="padding:3px 8px;border-radius:6px;background:var(--acb);font-size:9px;font-weight:600"><b>${SN[i]}:</b> ${p(v)}</div>`).join('')}</div></div></div>`);
-  addSlide(`<div class="scr"><div class="scr__hd" style="display:flex;align-items:center;gap:8px"><img src="${ic}" alt="" style="width:20px;height:20px"><div><div class="k">AI-модель</div><h2 class="scr__h">${md} — рейтинг брендов</h2></div></div><div class="scr__bd"><div class="c"><div class="c__t">Рейтинг брендов</div><div class="c__body"><div class="bc" data-chart="mb_${md}"></div></div></div></div><div class="scr__ft"><div class="sum"><b>${md}:</b> Ситилинк — <span class="r">${p(d.v)}</span> (${d.p} место). Лидер: ${d.l}. DeepSeek — лучшая модель (37,4%), GigaChat — худшая (8,9%).</div></div></div>`);
-  addSlide(`<div class="scr"><div class="scr__hd" style="display:flex;align-items:center;gap:8px"><img src="${ic}" alt="" style="width:20px;height:20px"><div><div class="k">AI-модель</div><h2 class="scr__h">${md} — Этапы воронки</h2></div></div><div class="scr__bd"><div class="c"><div class="c__t">По этапам воронки</div><div class="c__body" data-chart="ms_${md}"></div></div></div><div class="scr__ft"><div class="sum"><b>${md}:</b> Лучший этап — <span class="r">${SN[d.sv.indexOf(Math.max(...d.sv))]} (${p(Math.max(...d.sv))})</span>. Провал на осознании — GigaChat показывает 0%. Это системная проблема.</div></div></div>`);
+  addSlide(`<div class="scr"><div class="scr__hd" style="display:flex;align-items:center;gap:8px"><img src="${ic}" alt="" style="width:20px;height:20px"><div><div class="k">AI-модель</div><h2 class="scr__h">${md} — рейтинг брендов</h2></div></div><div class="scr__bd"><div class="c"><div class="c__t">Рейтинг брендов</div><div class="c__body"><div class="bc" data-chart="mb_${md}"></div></div></div></div><div class="scr__ft"><div class="sum"><b>Вывод:</b> Ситилинк — <span class="r">${p(d.v)}</span> (${d.p} место). Лидер: ${d.l}. DeepSeek — лучшая модель (37,4%), GigaChat — худшая (8,9%).</div></div></div>`);
+  addSlide(`<div class="scr"><div class="scr__hd" style="display:flex;align-items:center;gap:8px"><img src="${ic}" alt="" style="width:20px;height:20px"><div><div class="k">AI-модель</div><h2 class="scr__h">${md} — Этапы воронки</h2></div></div><div class="scr__bd"><div class="c"><div class="c__t">По этапам воронки</div><div class="c__body" data-chart="ms_${md}"></div></div></div><div class="scr__ft"><div class="sum"><b>Вывод:</b> Лучший этап — <span class="r">${SN[d.sv.indexOf(Math.max(...d.sv))]} (${p(Math.max(...d.sv))})</span>. Провал на осознании — GigaChat показывает 0%. Это системная проблема.</div></div></div>`);
   addNav(md,ic,idx0);
 });
 
-const sovIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">голос бренда и матрица</div><h2 class="scr__h">Голос бренда и тепловая карта</h2><p class="scr__p"><b>Чем голос бренда отличается от видимости:</b> Органическая видимость (16,0%) — доля ответов, где найден Ситилинк. Голос бренда (17,0%) — доля Ситилинка среди всех бренд-упоминаний. 3 место из 7.</p></div><div class="scr__bd"><div class="g2"><div class="c" style="align-items:center"><div class="c__t">Голос бренда — все бренды</div><div class="c__body" style="display:flex;justify-content:center;align-items:center;overflow:hidden"><canvas id="sovC"></canvas></div></div><div class="c"><div class="c__t">Матрица: модель × этапы воронки</div><div class="c__body" style="overflow:auto"><table class="hm" id="hmT"></table></div></div></div></div><div class="scr__ft"><div class="sum"><b>Голос бренда: 17,0%</b>. DNS 23,6%, Яндекс Маркет 16,7%. DeepSeek показывает на Покупке 75% — зона для контентного усиления.</div></div></div>`);
-addNav('голос бренда','',sovIdx);
+const sovIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">доля бренда (SOV) и матрица</div><h2 class="scr__h">Доля бренда (SOV) и тепловая карта</h2><p class="scr__p"><b>Чем доля бренда (SOV) отличается от видимости:</b> Органическая видимость (16,0%) — доля ответов, где найден Ситилинк. Доля бренда (SOV) (17,0%) — доля Ситилинка среди всех бренд-упоминаний. 3 место из 7.</p></div><div class="scr__bd"><div class="g2"><div class="c" style="align-items:center"><div class="c__t">Доля бренда (SOV) — все бренды</div><div class="c__body" style="display:flex;justify-content:center;align-items:center;overflow:hidden"><canvas id="sovC"></canvas></div></div><div class="c"><div class="c__t">Матрица: модель × этапы воронки</div><div class="c__body" style="overflow:auto"><table class="hm" id="hmT"></table></div></div></div></div><div class="scr__ft"><div class="sum"><b>Доля бренда (SOV): 17,0%</b>. DNS 23,6%, Яндекс Маркет 16,7%. DeepSeek показывает на Покупке 75% — зона для контентного усиления.</div></div></div>`);
+addNav('доля бренда (SOV)','',sovIdx);
 
-const tonIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">тональность</div><h2 class="scr__h">Тональность ответов AI-моделей</h2><p class="scr__p"><b>По нишам:</b> Ноутбуки — самый позитивный сегмент (45,7% позитивных). Телевизоры — самый негативный (3,5% негативных). <b>По моделям:</b> Gemini — самая позитивная (61,6%), Алиса — самая нейтральная (91,3%).</p></div><div class="scr__bd"><div class="g2"><div class="c"><div class="c__t">Тональность по нишам</div><div class="c__body" data-chart="tonN"></div></div><div class="c"><div class="c__t">Тональность по моделям</div><div class="c__body" data-chart="tonM"></div></div></div></div><div class="scr__ft"><div class="sum"><b>Вывод:</b> <span class="r">Низкий уровень негатива (1–3,5%)</span> — бренд редко упоминается в негативном контексте. Основной объём — нейтральные упоминания. Позитив выше у моделей с глубоким анализом (Gemini, Perplexity).</div></div></div>`);
+const tonIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">тональность</div><h2 class="scr__h">Тональность ответов AI-моделей по этапам воронки</h2><p class="scr__p"><b>Доли позитивных, нейтральных и негативных ответов</b> по каждой AI-модели на 3 этапах: Поиск и сравнение, Выбор решения, Покупка / действие.</p></div><div class="scr__bd"><div class="tns__legend"><span><i style="background:linear-gradient(90deg,#cbd5e1,#94a3b8)"></i>Нейтральные</span><span><i style="background:linear-gradient(90deg,#0ca789,#14b8a6)"></i>Позитивные</span><span><i style="background:linear-gradient(90deg,#ef4444,#f87171)"></i>Негативные</span></div><div class="tns__cols">${TS.map(st=>tonStackHTML(st)).join('')}</div></div><div class="scr__ft"><div class="sum"><b>Вывод:</b> <span class="r">Низкий уровень негатива (0,3–5,2%)</span> — бренд редко упоминается в негативном контексте. Основной объём — нейтральные упоминания. Позитив выше у моделей с глубоким анализом (Gemini, Perplexity).</div></div></div>`);
 addNav('тональность','',tonIdx);
 
-const oppIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">зоны роста</div><h2 class="scr__h">Зоны роста</h2><p class="scr__p"><b>8 точек роста</b> на пересечении ниш и этапов воронки. Ситилинк силён на покупке во всех нишах, но критически слаб на осознании и сравнении в смартфонах и телевизорах.</p></div><div class="scr__bd"><div class="c" style="flex:none"><table class="tb" id="oppT"><thead><tr><th>#</th><th>Ниша — подтема</th><th>Этап</th><th>Вид.</th><th>Лидер</th><th>Разрыв</th><th>Оценка</th></tr></thead><tbody></tbody></table></div><div class="pc"><div class="pc__p"><div class="pc__t" style="color:var(--sc)">Сильные стороны</div><div class="pc__i">Смартфоны — Бюджетные на Покупке — 46,5%</div><div class="pc__i">Комплектующие на Покупке — 43,6%</div><div class="pc__i">Ноутбуки на Покупке — 42,7%</div><div class="pc__i">Комплектующие на Выборе — 17,6%</div></div><div class="pc__c"><div class="pc__t" style="color:var(--wn)">Зоны риска</div><div class="pc__i">Смартфоны на Осознании — 0%</div><div class="pc__i">Телевизоры на Осознании — 0%</div><div class="pc__i">Смартфоны на Сравнении — 0,6%</div><div class="pc__i">Телевизоры на Сравнении — 3,1%</div></div></div></div></div>`);
+const oppIdx=addSlide(`<div class="scr"><div class="scr__hd"><div class="k">зоны роста</div><h2 class="scr__h">Зоны роста</h2><p class="scr__p"><b>8 точек роста</b> на пересечении ниш и этапов воронки. Ситилинк силён на покупке во всех нишах, но критически слаб на осознании и сравнении в смартфонах и телевизорах.</p></div><div class="scr__bd"><div class="c" style="flex:none"><table class="tb" id="oppT"><thead><tr><th>#</th><th>Ниша — подтема</th><th>Этап</th><th>Вид.</th><th>Лидер</th><th>Разрыв</th><th>Приоритет</th></tr></thead><tbody></tbody></table></div><div class="pc"><div class="pc__p"><div class="pc__t" style="color:var(--sc)">Сильные стороны</div><div class="pc__i">Смартфоны — Бюджетные на Покупке — 46,5%</div><div class="pc__i">Комплектующие на Покупке — 43,6%</div><div class="pc__i">Ноутбуки на Покупке — 42,7%</div><div class="pc__i">Комплектующие на Выборе — 17,6%</div></div><div class="pc__c"><div class="pc__t" style="color:var(--wn)">Зоны риска</div><div class="pc__i">Смартфоны на Осознании — 0%</div><div class="pc__i">Телевизоры на Осознании — 0%</div><div class="pc__i">Смартфоны на Сравнении — 0,6%</div><div class="pc__i">Телевизоры на Сравнении — 3,1%</div></div></div></div></div>`);
 addNav('зоны роста','',oppIdx);
 
 const slidesEl=document.getElementById('slides'),navEl=document.getElementById('nav');
@@ -356,7 +393,7 @@ document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(ci+1);if(e.ke
 let wt=null;document.addEventListener('wheel',e=>{if(wt)return;wt=setTimeout(()=>wt=null,300);if(e.deltaY>10)go(ci+1);else if(e.deltaY<-10)go(ci-1)},{passive:true});
 
 const rendered=new Set();
-function animateBars(container){requestAnimationFrame(()=>{requestAnimationFrame(()=>{container.querySelectorAll('.bf[data-w],.fn__bar[data-w],.tc__bar-f[data-w]').forEach(el=>{el.style.width=el.dataset.w+'%'})})})}
+function animateBars(container){requestAnimationFrame(()=>{requestAnimationFrame(()=>{container.querySelectorAll('.bf[data-w],.fn__bar[data-w],.tc__bar-f[data-w],.tns__seg[data-w]').forEach(el=>{el.style.width=el.dataset.w+'%'})})})}
 function animateCounters(container){container.querySelectorAll('[data-count]').forEach(el=>{const target=parseFloat(el.dataset.count),suffix=el.dataset.suffix||'',dur=1200,start=performance.now();function tick(t){const k=Math.min((t-start)/dur,1),e=1-Math.pow(1-k,3);el.textContent=(target*e).toFixed(target%1===0?0:1).replace('.',',')+suffix;if(k<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)})}
 function renderSlideContent(s){if(rendered.has(s))return;rendered.add(s);
 s.querySelectorAll('[data-chart="oBars"]').forEach(el=>{el.innerHTML=barHTML(D.ov,'v','b');animateBars(el)});
@@ -364,17 +401,15 @@ s.querySelectorAll('[data-chart="oMentions"]').forEach(el=>{el.innerHTML=barHTML
 s.querySelectorAll('[data-chart="funnel"]').forEach(el=>{el.innerHTML=funnelHTML(D.fn);animateBars(el)});
 s.querySelectorAll('[data-chart="fFilter"]').forEach(el=>{el.innerHTML=D.fn.map(f=>`<button class="${f.s===1?'on':''}" data-s="${f.s}">${f.s}. ${f.n}</button>`).join('');el.onclick=e=>{if(e.target.tagName==='BUTTON'){el.querySelectorAll('button').forEach(b=>b.classList.remove('on'));e.target.classList.add('on');renderFD(ss[ci].querySelector('[data-chart="fDetail"]'),+e.target.dataset.s)}}});
 s.querySelectorAll('[data-chart="fDetail"]').forEach(el=>renderFD(el,1));
-s.querySelectorAll('[data-chart="topics"]').forEach(el=>{const mx=Math.max(...D.topics.map(t=>t.v));el.innerHTML=D.topics.map((t,ti)=>{const w=mx>0?(t.v/mx*100):0;const isR=t.t==='Комплектующие';return`<div class="tc" style="animation:fadeUp .5s var(--e) ${ti*.08}s both"><div class="tc__h" style="color:${isR?'var(--p)':'var(--pb)'}"><span style="display:flex;align-items:center">${topicIcons[ti]}</span> ${t.t}</div><div class="tc__v" style="color:${isR?'var(--p)':'var(--pb)'}">${p(t.v)}</div><div class="tc__l">Место: ${t.r} · Лидер: ${t.l}</div><div class="tc__bar"><div class="tc__bar-f" data-w="${w}" style="background:${isR?'linear-gradient(90deg,var(--pb),var(--p))':'linear-gradient(90deg,#94a3b8,#cbd5e1)'}"></div></div></div>`}).join('');animateBars(el)});
+s.querySelectorAll('[data-chart="topics"]').forEach(el=>{const mx=Math.max(...D.topics.map(t=>t.v));el.innerHTML=D.topics.map((t,ti)=>{const w=mx>0?(t.v/mx*100):0;const isR=t.t==='Комплектующие';const cmx=Math.max(...t.comp.map(c=>c.v));return`<div class="tc" style="animation:fadeUp .5s var(--e) ${ti*.08}s both"><div class="tc__h" style="color:${isR?'var(--p)':'var(--pb)'}"><span style="display:flex;align-items:center">${topicIcons[ti]}</span> ${t.t}</div><div class="tc__v" style="color:${isR?'var(--p)':'var(--pb)'}">${p(t.v)}</div><div class="tc__l">Место: ${t.r} · Лидер: ${t.l}</div><div class="tc__bar"><div class="tc__bar-f" data-w="${w}" style="background:${isR?'linear-gradient(90deg,var(--pb),var(--p))':'linear-gradient(90deg,#94a3b8,#cbd5e1)'}"></div></div><div class="bc" style="margin-top:8px;gap:3px">${t.comp.map((c,ci)=>{const cw=cmx>0?(c.v/cmx*100):0;return`<div class="br${c.r?' br--r':''}" style="grid-template-columns:90px 1fr 40px;font-size:8px;padding:1px 0"><span>${c.b}</span><div class="bt" style="height:12px"><div class="bf${c.r?' bf--r':' bf--b'}" data-w="${cw}"></div></div><b style="font-size:8px">${p(c.v)}</b></div>`}).join('')}</div></div>`}).join('');animateBars(el)});
 s.querySelectorAll('[data-chart="topicFilter"]').forEach(el=>{el.innerHTML=D.topics.map((t,i)=>`<button class="${i===0?'on':''}" data-i="${i}">${t.t}</button>`).join('');el.onclick=e=>{if(e.target.tagName==='BUTTON'){el.querySelectorAll('button').forEach(b=>b.classList.remove('on'));e.target.classList.add('on');renderTD(ss[ci].querySelector('[data-chart="topicDetail"]'),+e.target.dataset.i)}}});
 s.querySelectorAll('[data-chart="topicDetail"]').forEach(el=>renderTD(el,0));
 modelOrder.forEach(md=>{const d=D.md[md];s.querySelectorAll(`[data-chart="mb_${md}"]`).forEach(el=>{el.innerHTML=barHTML(d.br,'v','b');animateBars(el)});s.querySelectorAll(`[data-chart="ms_${md}"]`).forEach(el=>{el.innerHTML=funnelHTML(d.sv.map((v,i)=>({v:v,lv:(d.lv?d.lv[i]:D.fn[i].lv),n:SN[i],l:(d.ld?d.ld[i]:D.fn[i].l),s:i+1})));animateBars(el)})});
-s.querySelectorAll('[data-chart="tonN"]').forEach(el=>{const mx=Math.max(...D.tonN.map(t=>t.p));el.innerHTML=D.tonN.map((t,i)=>{const w=mx>0?(t.p/mx*100):0;return`<div class="br" style="animation:fadeUp .4s var(--e) ${i*.05}s both"><span>${t.b}</span><div class="bt"><div class="bf bf--r" data-w="${w}"></div></div><b>${p(t.p)}</b></div>`}).join('');animateBars(el)});
-s.querySelectorAll('[data-chart="tonM"]').forEach(el=>{const mx=Math.max(...D.tonM.map(t=>t.p));el.innerHTML=D.tonM.map((t,i)=>{const w=mx>0?(t.p/mx*100):0;return`<div class="br" style="animation:fadeUp .4s var(--e) ${i*.04}s both"><span>${t.b}</span><div class="bt"><div class="bf bf--r" data-w="${w}"></div></div><b>${p(t.p)}</b></div>`}).join('');animateBars(el)});
 animateCounters(s);
 try{renderDonut()}catch(e){}
 const hm=s.querySelector('#hmT');if(hm){let h='<thead><tr><th>Модель</th>';SN.forEach(s=>h+=`<th>${s}</th>`);h+='</tr></thead><tbody>';Object.entries(D.md).forEach(([m,d])=>{h+=`<tr><td><img src="${ICO[m]}" alt="">${m}</td>`;d.sv.forEach(v=>{h+=`<td style="background:${hcBg(v)};color:${hcFg(v)}"><span class="hc">${p(v)}</span></td>`});h+='</tr>'});h+='</tbody>';hm.innerHTML=h}
-const ot=s.querySelector('#oppT');if(ot){const tb=ot.querySelector('tbody');tb.innerHTML=D.opp.map((o,i)=>{const z=o.z==='Критично'?'opp--e':o.z==='Низкая'?'opp--w':o.z==='Средняя'?'opp--a':'opp--r';return`<tr style="animation:fadeUp .4s var(--e) ${i*.05}s both"><td>${o.p}</td><td>${o.t}</td><td>${o.st}</td><td>${o.v}</td><td>${o.l}</td><td>${o.g}</td><td><span class="opp ${z}">${o.z}</span></td></tr>`}).join('')}}
-function renderFD(el,s){const items=D.ft[s]||[];const mx=Math.max(...items.map(i=>i.v));el.innerHTML=`<div class="c" style="flex:none"><div class="c__t">Этап ${s}: ${D.fn[s-1].n}</div><div class="bc">${items.map((i,idx)=>{const r=i.r,w=mx>0?(i.v/mx*100):0;return`<div class="br${r?' br--r':''}" style="animation:fadeUp .4s var(--e) ${idx*.05}s both"><span>${i.b}</span><div class="bt"><div class="bf${r?' bf--r':' bf--b'}" data-w="${w}"></div></div><b>${p(i.v)}</b></div>`}).join('')}</div></div>`;animateBars(el)}
+const ot=s.querySelector('#oppT');if(ot){const tb=ot.querySelector('tbody');const pr={Критично:0,Высокая:1,Средняя:2,Низкая:3};const sorted=[...D.opp].sort((a,b)=>pr[a.z]-pr[b.z]);tb.innerHTML=sorted.map((o,i)=>{const z=o.z==='Критично'?'opp--e':o.z==='Высокая'?'opp--a':o.z==='Средняя'?'opp--w':'opp--r';return`<tr style="animation:fadeUp .4s var(--e) ${i*.05}s both"><td>${i+1}</td><td>${o.t}</td><td>${o.st}</td><td>${o.v}</td><td>${o.l}</td><td>${o.g}</td><td><span class="opp ${z}">${o.z}</span></td></tr>`}).join('')}}
+function renderFD(el,s){const items=D.ft[s]||[];const mx=Math.max(...items.map(i=>i.v));const leader=items[0];const concl=s===1?'Ситилинк — 2 место (5,2%), отставание от DNS — 7,0 п.п.':s===2?'Ситилинк — 4 место (3,2%), отставание от DNS — 6,9 п.п.':s===3?'Ситилинк — 5 место (8,7%), отставание от DNS — 7,3 п.п.':'Ситилинк — 2 место (36,5%), отставание от DNS — 8,5 п.п.';el.innerHTML=`<div class="c" style="flex:none"><div class="c__t">Этап ${s}: ${D.fn[s-1].n}</div><div class="bc">${items.map((i,idx)=>{const r=i.r,w=mx>0?(i.v/mx*100):0;return`<div class="br${r?' br--r':''}" style="animation:fadeUp .4s var(--e) ${idx*.05}s both"><span>${i.b}</span><div class="bt"><div class="bf${r?' bf--r':' bf--b'}" data-w="${w}"></div></div><b>${p(i.v)}</b></div>`}).join('')}</div><div class="sum" style="margin-top:8px"><b>Вывод:</b> ${concl}. Лидер — ${leader.b} (${p(leader.v)}).</div></div>`;animateBars(el)}
 function renderTD(el,i){const t=D.topics[i]||D.topics[0];const mx=Math.max(...t.sub.map(s=>s.v));el.innerHTML=`<div class="c" style="flex:none"><div class="c__t">${t.t} — подтемы</div><div class="bc">${t.sub.map((s,idx)=>{const w=mx>0?(s.v/mx*100):0;return`<div class="br" style="animation:fadeUp .4s var(--e) ${idx*.04}s both"><span>${s.t}</span><div class="bt"><div class="bf bf--b" data-w="${w}"></div></div><b>${p(s.v)}</b></div>`}).join('')}</div></div>`;animateBars(el)}
 Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.font.size=9;Chart.defaults.color='#1a1a2e';let donutChart=null;
 function renderDonut(){const c=document.getElementById('sovC');if(!c||!c.getContext)return;if(donutChart)donutChart.destroy();const labels=D.sov.map(s=>s.b),vals=D.sov.map(s=>s.s),total=vals.reduce((a,b)=>a+b,0),colors=D.sov.map((s,i)=>s.r?'#ff6a00':['#94a3b8','#cbd5e1','#e2e8f0','#64748b','#475569','#334155','#1e293b'][i]);donutChart=new Chart(c,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:3,borderColor:'#fff',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:true,cutout:'58%',animation:{animateRotate:true,animateScale:true,duration:1200,easing:'easeOutQuart'},plugins:{legend:{position:'bottom',labels:{padding:6,usePointStyle:true,pointStyle:'circle',font:{size:8,weight:600}}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${(ctx.parsed/total*100).toFixed(1)}%`}}}}})}
